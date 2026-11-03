@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Windows XP</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none}
+html,body{width:100%;height:100%;overflow:hidden;font-family:Tahoma,"Microsoft YaHei","PingFang SC",SimSun,sans-serif;font-size:12px;background:#000}
+input,textarea{user-select:text;-webkit-user-select:text;font-family:inherit}
+button{font-family:inherit}
+
+/* ============ 启动画面 ============ */
+#boot{position:fixed;inset:0;background:#000;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.bootlogo{text-align:center;margin-bottom:60px}
+.xpflag{display:inline-grid;grid-template-columns:30px 30px;grid-template-rows:22px 22px;gap:4px;transform:skewY(-6deg) perspective(200px) rotateY(-12deg);margin-bottom:14px;filter:drop-shadow(0 0 14px rgba(120,160,255,.35))}
+.xpflag i{border-radius:3px 8px 3px 8px}
+.xpflag i:nth-child(1){background:linear-gradient(135deg,#ff5f52,#d33500)}
+.xpflag i:nth-child(2){background:linear-gradient(135deg,#9be356,#3da80f)}
+.xpflag i:nth-child(3){background:linear-gradient(135deg,#5aa2ff,#1156d6)}
+.xpflag i:nth-child(4){background:linear-gradient(135deg,#ffd34d,#e9a000)}
+.bootname{font-size:15px;color:#ccc;letter-spacing:.5px}
+.bootname b{display:block;font-size:34px;color:#fff;font-weight:700;letter-spacing:0;margin-top:2px;font-family:"Franklin Gothic Medium",Tahoma,sans-serif}
+.bootname b sup{color:#f60;font-size:20px;font-style:italic;font-weight:700;margin-left:4px}
+.bootbar{width:200px;height:16px;border:2px solid #8a8a9a;border-radius:8px;overflow:hidden;position:relative;background:#000}
+.bootbar .cells{position:absolute;top:2px;left:-60px;display:flex;gap:3px;animation:bootmove 1.6s linear infinite}
+.bootbar .cells i{width:11px;height:8px;background:linear-gradient(180deg,#7da6ff,#2052c9);border-radius:2px}
+@keyframes bootmove{0%{left:-60px}100%{left:210px}}
+#boot .copyright{position:absolute;bottom:24px;width:100%;display:flex;justify-content:space-between;padding:0 30px;color:#aaa;font-size:12px}
+
+/* ============ 登录画面 ============ */
+#login{position:fixed;inset:0;z-index:8900;display:none;flex-direction:column;background:linear-gradient(180deg,#5a7edc 0%,#5377d6 8%,#4166c4 50%,#39549c 100%)}
+#login .top,#login .bottom{height:78px;background:#00309c;flex:none}
+#login .top{border-bottom:2px solid #5e83d8;background:linear-gradient(180deg,#002174,#00309c)}
+#login .bottom{border-top:2px solid #e8a01a;background:linear-gradient(180deg,#00309c,#001a5e);display:flex;align-items:center;justify-content:space-between;padding:0 40px;color:#fff}
+#login .mid{flex:1;display:flex;align-items:center}
+#login .lhalf{flex:1;display:flex;flex-direction:column;align-items:flex-end;padding-right:50px;color:#fff}
+#login .lhalf .xpflag{transform:skewY(-6deg) scale(.9)}
+#login .lhalf h1{font-size:26px;font-weight:400;margin-top:10px;text-align:right}
+#login .lhalf h1 b{font-weight:700}
+#login .lhalf p{margin-top:18px;font-size:15px;color:#cfe0ff}
+#login .divider{width:2px;align-self:stretch;background:linear-gradient(180deg,transparent,#9db8ee 20%,#9db8ee 80%,transparent)}
+#login .rhalf{flex:1;padding-left:50px}
+.usercard{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:6px;cursor:pointer;max-width:300px;transition:background .15s}
+.usercard:hover,.usercard.sel{background:rgba(255,255,255,.18);outline:1px solid rgba(255,255,255,.35)}
+.usercard .avatar{width:52px;height:52px;border-radius:6px;border:2px solid #fff;background:linear-gradient(135deg,#ffd76e,#ff9b3d);display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 0 8px rgba(0,0,0,.4)}
+.usercard .uname{color:#fff;font-size:17px}
+.usercard .uhint{color:#cfe0ff;font-size:11px;margin-top:2px}
+#login .shutbtn{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}
+#login .shutbtn .ico{width:26px;height:26px;border-radius:4px;background:linear-gradient(135deg,#f5867a,#c23325);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;border:1px solid #fff}
+
+/* ============ 桌面 ============ */
+#desktop-wrap{position:fixed;inset:0 0 30px 0;overflow:hidden;display:none}
+.wp-bliss{background:
+ radial-gradient(135% 60% at 16% 112%, #226c0c 0%, #3f9a22 26%, #57b637 44%, #74d34a 56%, rgba(116,211,74,0) 60%),
+ radial-gradient(150% 66% at 78% 122%, #1a5e0a 0%, #358e1c 32%, #4fae31 52%, rgba(79,174,49,0) 60%),
+ radial-gradient(55% 18% at 28% 30%, rgba(255,255,255,.9), rgba(255,255,255,0) 70%),
+ radial-gradient(40% 13% at 70% 20%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%),
+ radial-gradient(46% 15% at 52% 42%, rgba(255,255,255,.5), rgba(255,255,255,0) 72%),
+ linear-gradient(180deg,#1656c6 0%, #3a7cda 28%, #7cb2e9 52%, #b5d8f4 66%, #dcedfb 74%, #eaf4fc 100%)}
+.wp-azul{background:radial-gradient(80% 60% at 50% 100%,#0a3f7a,#06234a 70%),linear-gradient(180deg,#0c5aa6,#063063)}
+.wp-energy{background:radial-gradient(70% 60% at 30% 80%,#7a1fa0,#3b0b63 70%),linear-gradient(180deg,#8e2ec4,#2a0750)}
+.wp-teal{background:#008080}
+.wp-olive{background:linear-gradient(180deg,#8aa860,#5c7a3a)}
+
+#icons{position:absolute;inset:0;padding:8px;display:grid;grid-auto-flow:column;grid-template-rows:repeat(auto-fill,86px);grid-auto-columns:84px;gap:4px;align-content:start}
+.dicon{width:80px;height:84px;display:flex;flex-direction:column;align-items:center;gap:3px;padding-top:6px;cursor:pointer;border-radius:3px}
+.dicon .ig{font-size:34px;line-height:38px;filter:drop-shadow(1px 2px 2px rgba(0,0,0,.45))}
+.dicon .lbl{color:#fff;text-shadow:1px 1px 2px #000,0 0 4px rgba(0,0,0,.7);text-align:center;font-size:11px;line-height:13px;padding:1px 3px;border-radius:2px;max-width:78px;overflow:hidden}
+.dicon.sel .lbl{background:#316ac5;outline:1px dotted #fff}
+.dicon.sel .ig{filter:drop-shadow(1px 2px 2px rgba(0,0,0,.45)) brightness(.82) sepia(.3) hue-rotate(180deg)}
+
+/* ============ 任务栏 ============ */
+#taskbar{position:fixed;left:0;right:0;bottom:0;height:30px;z-index:5000;display:flex;align-items:stretch;background:linear-gradient(180deg,#2a64da 0%,#3a7ae4 3%,#4187e7 6%,#4490e6 10%,#3883e0 14%,#2b71cf 22%,#2767c8 32%,#2257bd 60%,#1f53b8 86%,#1c4dac 92%,#173f90 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+#start-btn{display:flex;align-items:center;gap:6px;padding:0 22px 0 10px;border-radius:0 12px 12px 0;cursor:pointer;background:linear-gradient(180deg,#7ebc62 0%,#4ea73b 6%,#3d9434 12%,#368030 28%,#2f742a 64%,#266322 84%,#1e511b 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),2px 0 6px rgba(0,0,0,.35);margin-right:8px}
+#start-btn:hover{filter:brightness(1.12)}
+#start-btn:active,#start-btn.open{filter:brightness(.88)}
+#start-btn .miniflag{display:grid;grid-template-columns:9px 9px;grid-template-rows:7px 7px;gap:1px;transform:skewY(-8deg)}
+#start-btn .miniflag i{border-radius:1px 3px 1px 3px}
+#start-btn .miniflag i:nth-child(1){background:#ff5b4d}#start-btn .miniflag i:nth-child(2){background:#8fe04e}
+#start-btn .miniflag i:nth-child(3){background:#4d9bff}#start-btn .miniflag i:nth-child(4){background:#ffd34d}
+#start-btn span{color:#fff;font-weight:700;font-style:italic;font-size:16px;text-shadow:1px 1px 2px rgba(0,0,0,.6);letter-spacing:.5px}
+#task-tabs{flex:1;display:flex;align-items:center;gap:3px;overflow:hidden;padding:3px 2px}
+.ttab{height:24px;min-width:60px;max-width:160px;flex:1;display:flex;align-items:center;gap:5px;padding:0 8px;border-radius:3px;color:#fff;cursor:pointer;background:linear-gradient(180deg,#4f8fe8,#3a78d6 50%,#2d65c4);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),1px 1px 2px rgba(0,0,0,.3);overflow:hidden;white-space:nowrap}
+.ttab .tt{overflow:hidden;text-overflow:ellipsis;font-size:11px;text-shadow:1px 1px 1px rgba(0,0,0,.4)}
+.ttab.active{background:linear-gradient(180deg,#1c52b0,#2159b5 50%,#2a63bf);box-shadow:inset 1px 1px 3px rgba(0,0,0,.5)}
+.ttab:hover:not(.active){filter:brightness(1.12)}
+#tray{display:flex;align-items:center;gap:8px;padding:0 12px 0 14px;background:linear-gradient(180deg,#1396e9 0%,#18a5f0 4%,#16a2ee 8%,#1295e6 18%,#0e84d8 40%,#0b76ca 60%,#0a6cc0 84%,#0861b4 100%);box-shadow:inset 2px 1px 3px rgba(0,0,0,.25);color:#fff}
+#tray .tico{cursor:pointer;font-size:14px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+#clock{font-size:11px;text-shadow:1px 1px 1px rgba(0,0,0,.4);cursor:default;min-width:46px;text-align:center}
+
+/* ============ 开始菜单 ============ */
+#start-menu{position:fixed;left:0;bottom:30px;width:390px;z-index:6000;display:none;flex-direction:column;border-radius:6px 6px 0 0;overflow:hidden;box-shadow:3px -2px 12px rgba(0,0,0,.5);border:1px solid #1c49a8}
+#sm-head{height:58px;display:flex;align-items:center;gap:10px;padding:0 12px;background:linear-gradient(180deg,#1b63d2 0%,#2a7be4 8%,#2c7ee6 14%,#2independ 0,#1d5fc8 70%,#1853b8 90%,#1346a3 100%);background:linear-gradient(180deg,#1b63d2,#2a7be4 12%,#2369d4 55%,#1346a3)}
+#sm-head .avatar{width:42px;height:42px;border-radius:5px;border:2px solid rgba(255,255,255,.85);background:linear-gradient(135deg,#ffd76e,#ff9b3d);display:flex;align-items:center;justify-content:center;font-size:24px}
+#sm-head .nm{color:#fff;font-size:15px;font-weight:700;text-shadow:1px 1px 2px rgba(0,0,0,.5)}
+#sm-cols{display:flex;border-top:2px solid #e8a01a}
+.sm-left{width:53%;background:#fff;padding:6px 4px;display:flex;flex-direction:column}
+.sm-right{width:47%;background:#d3e5fa;border-left:1px solid #95bdee;padding:6px 4px;display:flex;flex-direction:column}
+.smi{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:3px;cursor:pointer;color:#1f3b66}
+.sm-left .smi{color:#222}
+.smi .si{font-size:22px;width:26px;text-align:center;flex:none}
+.sm-right .smi .si{font-size:18px}
+.smi .sl b{display:block;font-size:12px}
+.smi .sl small{color:#888;font-size:10px}
+.smi:hover{background:#316ac5;color:#fff}
+.smi:hover .sl small{color:#cfe0ff}
+.sm-sep{height:1px;background:linear-gradient(90deg,transparent,#c9c9c9,transparent);margin:4px 8px}
+.sm-right .sm-sep{background:linear-gradient(90deg,transparent,#95bdee,transparent)}
+.sm-right .smi b{font-weight:700}
+#sm-foot{height:40px;display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:0 14px;background:linear-gradient(180deg,#3a77d8,#2861c4 50%,#1d51ae)}
+#sm-foot .fbtn{display:flex;align-items:center;gap:6px;color:#fff;cursor:pointer;padding:4px 8px;border-radius:3px;font-size:12px}
+#sm-foot .fbtn:hover{background:rgba(255,255,255,.18)}
+#sm-foot .fico{width:22px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;border:1px solid rgba(255,255,255,.7)}
+.fico.off{background:linear-gradient(135deg,#f5867a,#c23325)}
+.fico.logo{background:linear-gradient(135deg,#f8c468,#d98a1a)}
+#sm-allprog{margin-top:auto}
+
+/* ============ 窗口 ============ */
+.window{position:absolute;display:flex;flex-direction:column;min-width:220px;min-height:120px;border-radius:8px 8px 3px 3px;padding:0 3px 3px;background:linear-gradient(180deg,#0855dd,#0843c5);box-shadow:3px 4px 14px rgba(0,0,0,.5);z-index:100}
+.window.inactive{background:linear-gradient(180deg,#7a96df,#6f8ccc);box-shadow:2px 3px 8px rgba(0,0,0,.3)}
+.window.maxed{border-radius:0;padding:0;left:0!important;top:0!important;width:100%!important;height:100%!important}
+.window.maxed .titlebar{border-radius:0}
+.titlebar{height:28px;flex:none;display:flex;align-items:center;border-radius:7px 7px 0 0;padding:0 5px 0 7px;cursor:default;background:linear-gradient(180deg,#0058ee 0%,#3593ff 4%,#288eff 6%,#127dff 8%,#036ffc 10%,#0262ee 14%,#0057e5 20%,#0054e3 24%,#0055eb 56%,#005bf5 66%,#026afe 76%,#0062ef 86%,#0052d6 92%,#0040ab 94%,#003092 100%)}
+.window.inactive .titlebar{background:linear-gradient(180deg,#89a8e8 0%,#9cb8ef 8%,#8fb0ec 20%,#82a4e4 50%,#7b9ede 80%,#6f93d4 100%)}
+.tb-left{flex:1;display:flex;align-items:center;gap:6px;overflow:hidden;height:100%}
+.tb-icon{font-size:15px;filter:drop-shadow(1px 1px 1px rgba(0,0,0,.4))}
+.tb-title{color:#fff;font-weight:700;font-size:12px;text-shadow:1px 1px 2px rgba(0,0,0,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.window.inactive .tb-title{color:#e4ecfb}
+.tb-btns{display:flex;gap:2px}
+.tbb{width:21px;height:21px;border-radius:3px;border:1px solid rgba(255,255,255,.65);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(180deg,#3a83f1,#1e63d8 45%,#1450bd);box-shadow:inset 0 1px 0 rgba(255,255,255,.4);text-shadow:0 1px 1px rgba(0,0,0,.4);line-height:1}
+.tbb:hover{filter:brightness(1.2)}
+.tbb:active{filter:brightness(.85)}
+.tbb.close{background:linear-gradient(180deg,#f1a187,#e0673d 40%,#c93b13 70%,#b02e0c)}
+.window.inactive .tbb{opacity:.75}
+.win-body{flex:1;background:#ece9d8;border:1px solid #889;border-top:none;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.rsz{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;z-index:10}
+
+/* 菜单栏 / 下拉菜单 / 右键菜单 */
+.menubar{display:flex;background:#ece9d8;border-bottom:1px solid #aca899;flex:none}
+.menubar .mi{padding:4px 9px;cursor:default}
+.menubar .mi:hover,.menubar .mi.open{background:#316ac5;color:#fff}
+.dropmenu{position:fixed;background:#fff;border:1px solid #aca899;box-shadow:3px 3px 6px rgba(0,0,0,.3);z-index:9500;min-width:160px;padding:2px}
+.dropmenu .dmi{padding:5px 22px 5px 26px;cursor:default;white-space:nowrap;position:relative}
+.dropmenu .dmi:hover{background:#316ac5;color:#fff}
+.dropmenu .dmi.dis{color:#aca899}
+.dropmenu .dmi.dis:hover{background:none;color:#aca899}
+.dropmenu .dsep{height:1px;background:#d8d4c8;margin:3px 2px}
+.dropmenu .dmi .dico{position:absolute;left:5px;font-size:13px}
+
+/* 通用控件 */
+.xbtn{min-width:74px;padding:4px 12px;border:1px solid #003c74;border-radius:3px;background:linear-gradient(180deg,#fff,#f1efe2 60%,#e2dfc9 86%,#d8d0c4);cursor:pointer;font-size:12px}
+.xbtn:hover{box-shadow:inset 0 0 0 2px rgba(255,178,49,.6)}
+.xbtn:active{background:linear-gradient(180deg,#d8d0c4,#e8e4d4)}
+.xbtn:focus{outline:1px dotted #000;outline-offset:-4px}
+.xinput{border:1px solid #7f9db9;padding:3px 5px;font-size:12px;background:#fff}
+.toolbar{display:flex;align-items:center;gap:4px;padding:4px 6px;background:linear-gradient(180deg,#f6f5f1,#ece9d8);border-bottom:1px solid #aca899;flex:none}
+.tbtn{padding:3px 8px;border:1px solid transparent;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.tbtn:hover{border-color:#316ac5;background:#dcebfd}
+.tbtn:active{background:#c1dbfc}
+.tbtn.dis{opacity:.4;pointer-events:none}
+.statusbar{flex:none;display:flex;gap:2px;padding:3px 8px;background:#ece9d8;border-top:1px solid #fff;box-shadow:inset 0 1px 0 #aca899;color:#444;font-size:11px}
+.statusbar .pane{border:1px solid;border-color:#aca899 #fff #fff #aca899;padding:1px 8px}
+
+/* 资源管理器 */
+.exp-side{width:170px;flex:none;background:linear-gradient(180deg,#7aa9e6,#6699e0 30%,#5a8fdc);padding:8px;overflow:auto}
+.exp-card{background:#d6e5fa;border-radius:5px;margin-bottom:10px;overflow:hidden;box-shadow:1px 1px 3px rgba(0,0,0,.25)}
+.exp-card h4{background:linear-gradient(90deg,#fff,#c7d9f7);color:#15428b;padding:5px 10px;font-size:12px;display:flex;justify-content:space-between;cursor:default}
+.exp-card .ecb{padding:6px 10px}
+.exp-card .lnk{display:flex;gap:6px;align-items:center;padding:3px 0;color:#15428b;cursor:pointer;font-size:11px}
+.exp-card .lnk:hover{color:#4f8af0;text-decoration:underline}
+.exp-main{flex:1;background:#fff;overflow:auto;padding:10px;display:grid;grid-template-columns:repeat(auto-fill,86px);grid-auto-rows:80px;gap:6px;align-content:start}
+.fitem{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border-radius:3px;cursor:pointer;text-align:center}
+.fitem .fi{font-size:30px;line-height:34px}
+.fitem .fn{font-size:11px;line-height:12px;max-width:82px;overflow:hidden;word-break:break-all;max-height:24px}
+.fitem:hover{background:#e8f0fb}
+.fitem.sel{background:#316ac5;color:#fff}
+.addrbar{display:flex;align-items:center;gap:6px;padding:3px 6px;border-bottom:1px solid #aca899;background:#ece9d8;flex:none}
+.addrbar .xinput{flex:1}
+
+/* 终端 */
+.term{flex:1;background:#000;color:#ccc;font-family:"Lucida Console","Courier New",monospace;font-size:13px;padding:4px 6px;overflow:auto;cursor:text}
+.term .ln{white-space:pre-wrap;word-break:break-all;min-height:15px}
+.term .inrow{display:flex}
+.term .inrow input{flex:1;background:transparent;border:none;outline:none;color:#ccc;font:inherit;padding:0}
+
+/* 记事本/代码 */
+.np-text{flex:1;border:none;outline:none;resize:none;font-family:"Lucida Console",Consolas,monospace;font-size:13px;padding:4px;background:#fff;white-space:pre;overflow:auto}
+.np-text.wrap{white-space:pre-wrap}
+.code-wrap{flex:1;display:flex;overflow:hidden;background:#fff}
+.code-ln{width:42px;flex:none;background:#f0f0f0;color:#999;text-align:right;padding:6px 6px 6px 0;font-family:Consolas,monospace;font-size:13px;line-height:18px;overflow:hidden;border-right:1px solid #ddd;white-space:pre}
+.code-area{position:relative;flex:1;overflow:hidden}
+.code-hl,.code-ta{position:absolute;inset:0;font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:18px;padding:6px;white-space:pre;overflow:auto;tab-size:4}
+.code-hl{pointer-events:none;color:#222}
+.code-ta{background:transparent;color:transparent;caret-color:#000;border:none;outline:none;resize:none}
+.code-hl .k{color:#00f}.code-hl .s{color:#a31515}.code-hl .c{color:#080}.code-hl .n{color:#098658}
+.code-out{height:110px;flex:none;background:#1e1e1e;color:#ce9178;font-family:Consolas,monospace;font-size:12px;padding:6px;overflow:auto;border-top:2px solid #444;white-space:pre-wrap}
+
+/* 扫雷 */
+.mine-wrap{background:#ece9d8;padding:8px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.mine-top{display:flex;justify-content:space-between;align-items:center;width:100%;border:2px solid;border-color:#999 #fff #fff #999;padding:5px 7px;background:#c0c0c0}
+.lcd{background:#000;color:#f00;font-family:"Lucida Console",monospace;font-size:20px;font-weight:700;padding:1px 4px;letter-spacing:2px;border:1px solid;border-color:#808080 #fff #fff #808080}
+.smiley{width:30px;height:30px;font-size:18px;display:flex;align-items:center;justify-content:center;background:#c0c0c0;border:2px solid;border-color:#fff #808080 #808080 #fff;cursor:pointer}
+.smiley:active{border-color:#808080 #fff #fff #808080}
+.mine-grid{display:grid;border:3px solid;border-color:#808080 #fff #fff #808080;background:#c0c0c0}
+.mcell{width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:"Lucida Console",monospace;cursor:pointer;background:#c0c0c0;border:2px solid;border-color:#fff #808080 #808080 #fff}
+.mcell.open{border:1px solid #9a9a9a;border-width:0 0 1px 1px;background:#c0c0c0}
+.mcell.boom{background:#f00}
+.m1{color:#00f}.m2{color:#008000}.m3{color:#f00}.m4{color:#000080}.m5{color:#800000}.m6{color:#008080}.m7{color:#000}.m8{color:#808080}
+
+/* 画图 */
+.paint-body{display:flex;flex:1;overflow:hidden}
+.paint-tools{width:62px;flex:none;background:#ece9d8;padding:4px;display:grid;grid-template-columns:1fr 1fr;gap:3px;align-content:start;border-right:1px solid #aca899}
+.ptool{height:26px;display:flex;align-items:center;justify-content:center;border:1px solid #aca899;background:#f5f3ea;cursor:pointer;font-size:14px;border-radius:2px}
+.ptool.sel{background:#cfe0f7;border-color:#316ac5;box-shadow:inset 1px 1px 2px rgba(0,0,0,.2)}
+.paint-canvas-wrap{flex:1;background:#808890;overflow:auto;padding:6px}
+.paint-canvas-wrap canvas{background:#fff;cursor:crosshair;box-shadow:2px 2px 5px rgba(0,0,0,.4)}
+.paint-bottom{flex:none;display:flex;align-items:center;gap:8px;padding:4px 8px;background:#ece9d8;border-top:1px solid #aca899}
+.pal{display:grid;grid-template-columns:repeat(14,16px);grid-template-rows:16px 16px;gap:1px}
+.pal i{border:1px solid #888;cursor:pointer}
+.fgbg{position:relative;width:34px;height:34px;flex:none}
+.fgbg .fg,.fgbg .bg{position:absolute;width:20px;height:20px;border:1px solid #555}
+.fgbg .bg{right:0;bottom:0}.fgbg .fg{left:0;top:0;z-index:2}
+
+/* 媒体播放器 */
+.wmp-vis{flex:1;background:radial-gradient(60% 80% at 50% 30%,#10243f,#04070d);display:flex;align-items:flex-end;justify-content:center;gap:2px;padding:14px;min-height:120px}
+.wmp-ctl{flex:none;background:linear-gradient(180deg,#3c5a82,#15263e);padding:8px 12px;display:flex;align-items:center;gap:10px}
+.wmp-btn{width:34px;height:34px;border-radius:50%;border:2px solid #7e9cc4;background:radial-gradient(circle at 35% 30%,#6f93c4,#23456f);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.wmp-btn:hover{filter:brightness(1.25)}
+.wmp-list{flex:none;max-height:90px;overflow:auto;background:#0d1b2e;color:#cdd9ec;border-top:1px solid #3a5a86}
+.wmp-list .trk{padding:4px 10px;cursor:pointer;display:flex;justify-content:space-between}
+.wmp-list .trk:hover{background:#1d3a5e}
+.wmp-list .trk.playing{background:#2a5a96;color:#fff}
+
+/* IE */
+.ie-page{flex:1;background:#fff;overflow:auto;font-family:"Times New Roman",SimSun,serif;font-size:14px}
+.ie-page .msn{font-family:Tahoma,"Microsoft YaHei",sans-serif}
+
+/* 对话框 */
+.dlg-body{padding:16px 18px;display:flex;gap:14px;align-items:flex-start;flex:1}
+.dlg-icon{font-size:34px;line-height:1}
+.dlg-text{flex:1;padding-top:6px;line-height:1.5;font-size:12px}
+.dlg-btns{display:flex;justify-content:center;gap:8px;padding:0 12px 14px;flex:none}
+
+/* 气泡提示 */
+#balloon{position:fixed;right:10px;bottom:40px;width:260px;background:#ffffe1;border:1px solid #000;border-radius:8px;padding:10px 12px;z-index:7000;box-shadow:2px 2px 8px rgba(0,0,0,.4);display:none;font-size:12px;line-height:1.5}
+#balloon:after{content:'';position:absolute;right:30px;bottom:-12px;border:7px solid transparent;border-top:12px solid #ffffe1}
+#balloon b{display:flex;justify-content:space-between}
+#balloon .bx{cursor:pointer;font-weight:700}
+
+/* 关机/屏保/BSOD */
+#shutoverlay{position:fixed;inset:0;z-index:8500;display:none;align-items:center;justify-content:center;background:rgba(10,30,90,.45);backdrop-filter:grayscale(.7)}
+.shutbox{width:330px;border-radius:8px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.6)}
+.shutbox .sh{background:linear-gradient(180deg,#1b63d2,#1346a3);color:#fff;padding:10px 16px;font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.shutbox .sb{background:linear-gradient(180deg,#3f6ec9,#2a55ae);padding:26px 20px;display:flex;justify-content:space-around}
+.shutbox .sf{background:linear-gradient(180deg,#2a55ae,#1d448f);padding:8px 14px;text-align:right}
+.sopt{display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;cursor:pointer;font-size:12px}
+.sopt .so{width:38px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid rgba(255,255,255,.6);box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.sopt:hover .so{filter:brightness(1.25);transform:scale(1.06)}
+.so.standby{background:linear-gradient(135deg,#ffd95e,#e0a012)}
+.so.off{background:linear-gradient(135deg,#f5867a,#c23325)}
+.so.restart{background:linear-gradient(135deg,#9be36a,#3da81f)}
+#safeoff{position:fixed;inset:0;background:#000;z-index:9500;display:none;align-items:center;justify-content:center;color:#ff9b2f;font-size:24px;font-weight:700;text-align:center;font-family:Tahoma,sans-serif}
+#screensaver{position:fixed;inset:0;background:#000;z-index:9400;display:none;overflow:hidden}
+#ss-logo{position:absolute;left:40px;top:40px}
+#bsod{position:fixed;inset:0;background:#0827a8;z-index:9600;display:none;color:#fff;font-family:"Lucida Console",monospace;font-size:14px;padding:60px 70px;line-height:1.7;white-space:pre-wrap}
+
+/* 滚动条 */
+::-webkit-scrollbar{width:15px;height:15px}
+::-webkit-scrollbar-track{background:#f0eee4}
+::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#cfdcf5,#b4ccf2 50%,#9ebde8);border:1px solid #7a98c9;border-radius:2px}
+::-webkit-scrollbar-button{background:#cfdcf5;border:1px solid #7a98c9;height:15px;width:15px}
+
+/* 日历/时钟 */
+.dt-body{display:flex;gap:14px;padding:14px;flex:1}
+.dt-clock{flex:none}
+.dt-info{flex:1;font-size:12px;line-height:1.9}
+
+/* Clippy */
+#clippy{position:fixed;z-index:7100;width:230px;display:none;right:60px;bottom:120px}
+#clippy .bub{background:#ffffe1;border:1px solid #000;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.5;box-shadow:2px 2px 8px rgba(0,0,0,.35)}
+#clippy .clip{font-size:46px;text-align:right;margin-top:4px;animation:clipbounce 1.4s ease-in-out infinite;transform-origin:bottom}
+@keyframes clipbounce{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(8deg) translateY(-4px)}}
+.lnkbtn{color:#1346a3;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- 启动 -->
+<div id="boot">
+  <div class="bootlogo">
+    <div class="xpflag"><i></i><i></i><i></i><i></i></div>
+    <div class="bootname">Microsoft<b>Windows<sup>xp</sup></b></div>
+  </div>
+  <div class="bootbar"><div class="cells"><i></i><i></i><i></i></div></div>
+  <div class="copyright"><span>Copyright © Microsoft Corporation</span><span>Microsoft®</span></div>
+</div>
+
+<!-- 登录 -->
+<div id="login">
+  <div class="top"></div>
+  <div class="mid">
+    <div class="lhalf">
+      <div class="xpflag"><i></i><i></i><i></i><i></i></div>
+      <h1>Microsoft <b>Windows <sup style="color:#ff8a00;font-size:16px">XP</sup></b></h1>
+      <p>要开始，请单击您的用户名</p>
+    </div>
+    <div class="divider"></div>
+    <div class="rhalf">
+      <div class="usercard" onclick="doLogin()">
+        <div class="avatar">🦋</div>
+        <div><div class="uname">Administrator</div><div class="uhint">单击此处登录</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="shutbtn" onclick="powerOff()"><div class="ico">⏻</div>关闭计算机</div>
+    <div style="font-size:11px;color:#9db8ee;max-width:300px;text-align:right">登录之后，您可以添加或更改帐户。<br>只要使用"控制面板"中的"用户帐户"。</div>
+  </div>
+</div>
+
+<!-- 桌面 -->
+<div id="desktop-wrap" class="wp-bliss">
+  <div id="icons"></div>
+  <div id="wins" style="position:absolute;inset:0;pointer-events:none"></div>
+</div>
+
+<!-- 任务栏 -->
+<div id="taskbar" style="display:none">
+  <div id="start-btn" onclick="toggleStart(event)">
+    <div class="miniflag"><i></i><i></i><i></i><i></i></div><span>开始</span>
+  </div>
+  <div id="task-tabs"></div>
+  <div id="tray">
+    <span class="tico" id="vol-ico" title="音量">🔊</span>
+    <span class="tico" title="本地连接 速度: 100.0 Mbps">🖥️</span>
+    <span class="tico" title="Windows 安全中心">🛡️</span>
+    <span id="clock" ondblclick="openDateTime()">--:--</span>
+  </div>
+</div>
+
+<!-- 开始菜单 -->
+<div id="start-menu">
+  <div id="sm-head"><div class="avatar">🦋</div><div class="nm">Administrator</div></div>
+  <div id="sm-cols">
+    <div class="sm-left" id="sm-left"></div>
+    <div class="sm-right" id="sm-right"></div>
+  </div>
+  <div id="sm-foot">
+    <div class="fbtn" onclick="logOff()"><div class="fico logo">⇦</div>注销</div>
+    <div class="fbtn" onclick="shutdownDialog()"><div class="fico off">⏻</div>关闭计算机</div>
+  </div>
+</div>
+
+<div id="balloon"></div>
+<div id="clippy"><div class="bub" id="clippy-text"></div><div class="clip">📎</div></div>
+
+<div id="shutoverlay">
+  <div class="shutbox">
+    <div class="sh"><span>关闭计算机</span><span style="font-style:italic;font-weight:400;font-size:12px">Windows<sup>xp</sup></span></div>
+    <div class="sb">
+      <div class="sopt" onclick="standBy()"><div class="so standby">🌙</div>待机</div>
+      <div class="sopt" onclick="powerOff()"><div class="so off">⏻</div>关闭</div>
+      <div class="sopt" onclick="restartPC()"><div class="so restart">↻</div>重新启动</div>
+    </div>
+    <div class="sf"><button class="xbtn" onclick="hideShut()">取消</button></div>
+  </div>
+</div>
+<div id="safeoff">您现在可以安全地关闭计算机了。</div>
+<div id="screensaver"><div id="ss-logo"><div class="xpflag"><i></i><i></i><i></i><i></i></div></div></div>
+<div id="bsod"></div>
+
+<script>
+/* ==================== 工具 ==================== */
+const $=s=>document.querySelector(s);
+function ce(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function pad(n){return n<10?'0'+n:''+n;}
+
+/* ==================== 声音 (WebAudio) ==================== */
+let AC=null,masterGain=null,volume=0.7;
+function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();masterGain=AC.createGain();masterGain.gain.value=volume;masterGain.connect(AC.destination);}if(AC.state==='suspended')AC.resume();return AC;}
+function setVolume(v){volume=v;if(masterGain)masterGain.gain.value=v;}
+function tone(freq,dur,type='sine',when=0,vol=0.25){try{const ctx=ac(),t=ctx.currentTime+when;const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+0.02);g.gain.exponentialRampToValueAtTime(0.001,t+dur);o.connect(g);g.connect(masterGain);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
+function sndStartup(){[ [622.25,0,1.6],[311.13,0.05,2.2],[415.30,0.55,1.2],[466.16,1.0,1.1],[622.25,1.45,1.8] ].forEach(n=>{tone(n[0],n[2],'sine',n[1],0.18);tone(n[0]/2,n[2],'triangle',n[1],0.10);});}
+function sndShut(){[ [466.16,0,0.9],[415.30,0.3,0.9],[311.13,0.6,1.4] ].forEach(n=>{tone(n[0],n[2],'sine',n[1],0.18);});}
+function sndError(){tone(740,0.12,'square',0,0.08);tone(587,0.3,'square',0.1,0.08);}
+function sndDing(){tone(987,0.5,'sine',0,0.15);tone(1318,0.5,'sine',0.02,0.1);}
+function sndClick(){tone(1600,0.03,'square',0,0.04);}
+function sndRecycle(){tone(300,0.15,'sawtooth',0,0.08);tone(150,0.25,'sawtooth',0.08,0.08);}
+
+/* ==================== 虚拟文件系统 ==================== */
+const FS={type:'dir',name:'C:',children:{}};
+const HOME='C:/Documents and Settings/Administrator';
+const DESK=HOME+'/桌面', DOCS=HOME+'/我的文档', PICS=DOCS+'/图片收藏';
+function fsGet(path){if(!path)return null;const parts=path.split('/').filter(Boolean);if(!parts.length||parts[0].toUpperCase()!=='C:')return null;let node=FS;for(let i=1;i<parts.length;i++){if(node.type!=='dir'||!node.children[parts[i]])return null;node=node.children[parts[i]];}return node;}
+function fsJoin(base,p){p=String(p).replace(/\\/g,'/');let parts;if(/^c:/i.test(p)){parts=p.split('/').filter(Boolean);parts[0]='C:';}else{parts=base.split('/').filter(Boolean).concat(p.split('/').filter(Boolean));}
+const out=[];for(const seg of parts){if(seg==='.')continue;else if(seg==='..'){if(out.length>1)out.pop();}else out.push(seg);}return out.join('/');}
+function fsMkdir(path){const parts=path.split('/').filter(Boolean);let node=FS;for(let i=1;i<parts.length;i++){if(!node.children[parts[i]])node.children[parts[i]]={type:'dir',name:parts[i],children:{}};node=node.children[parts[i]];if(node.type!=='dir')return null;}return node;}
+function fsWrite(path,content,mime='text'){const i=path.lastIndexOf('/');const dir=fsMkdir(path.slice(0,i));const name=path.slice(i+1);dir.children[name]={type:'file',name,content,mime,mtime:new Date()};return dir.children[name];}
+function fsDelete(path){const i=path.lastIndexOf('/');const dir=fsGet(path.slice(0,i));const name=path.slice(i+1);if(dir&&dir.children[name]){const node=dir.children[name];delete dir.children[name];return node;}return null;}
+function uniqueName(dirPath,base,ext){const dir=fsGet(dirPath);let n=base+ext,i=2;while(dir.children[n]){n=base+' ('+(i++)+')'+ext;}return n;}
+function fileIcon(node){if(node.type==='dir')return '📁';const n=node.name.toLowerCase();if(node.mime==='image'||/\.(png|jpg|jpeg|bmp|gif)$/.test(n))return '🖼️';if(/\.(txt|ini|log)$/.test(n))return '📄';if(/\.(js|py|html|css|bat)$/.test(n))return '📜';if(/\.(exe|com)$/.test(n))return '⚙️';if(/\.(mp3|wav|wma)$/.test(n))return '🎵';if(/\.(webm|avi|wmv)$/.test(n))return '🎬';return '📄';}
+
+function initFS(){
+fsMkdir(DESK);fsMkdir(PICS);fsMkdir(DOCS+'/音乐收藏');
+fsMkdir('C:/WINDOWS/system32');fsMkdir('C:/Program Files/Internet Explorer');fsMkdir('C:/Program Files/Windows Media Player');fsMkdir('C:/Program Files/Movie Maker');
+fsWrite(DOCS+'/自述文件.txt','欢迎使用 Windows XP！\n\n这是一个运行在浏览器里的复刻版操作系统。\n\n一些可以尝试的事情：\n  · 打开"命令提示符"，输入 python 进入真正的 Python 解释器\n  · 在"画图"里涂鸦，保存后用"Movie Maker"做成动画并导出视频\n  · 双击右下角的时钟\n  · 在终端里输入 bsod（后果自负）\n  · 在记事本里多打几个字，会有老朋友来看你\n  · 右键桌面 → 新建 → 文件夹\n\n祝你玩得开心。\n—— 2001 年的微风');
+fsWrite(DOCS+'/待办事项.txt','□ 给 MSN 好友回消息\n□ 整理"我的文档"\n□ 扫雷打破 99 秒记录\n□ 用 Movie Maker 剪一部大片\n□ 下载更多内存');
+fsWrite(DOCS+'/诗.txt','蓝天白云青草地，\n一座小丘入梦来。\n若问此景何处有，\n桌面壁纸天天在。');
+fsWrite('C:/WINDOWS/system32/真相.txt','其实……根本没有什么 system32。\n你删不掉我的。');
+fsWrite('C:/WINDOWS/win.ini','[windows]\nload=\nrun=\nNullPort=None');
+fsWrite('C:/Program Files/Internet Explorer/iexplore.exe','MZ�…(二进制内容)');
+// 生成"蓝天.jpg"示例图片
+try{const c=document.createElement('canvas');c.width=320;c.height=240;const x=c.getContext('2d');
+const sky=x.createLinearGradient(0,0,0,170);sky.addColorStop(0,'#1656c6');sky.addColorStop(.5,'#7cb2e9');sky.addColorStop(1,'#dcedfb');x.fillStyle=sky;x.fillRect(0,0,320,170);
+x.fillStyle='rgba(255,255,255,.9)';[[70,50,28],[100,55,22],[230,38,24],[205,44,18],[160,90,16]].forEach(b=>{x.beginPath();x.ellipse(b[0],b[1],b[2],b[2]*.55,0,0,7);x.fill();});
+const hill=x.createLinearGradient(0,150,0,240);hill.addColorStop(0,'#74d34a');hill.addColorStop(1,'#226c0c');x.fillStyle=hill;x.beginPath();x.moveTo(0,200);x.quadraticCurveTo(90,140,200,185);x.quadraticCurveTo(270,210,320,190);x.lineTo(320,240);x.lineTo(0,240);x.fill();
+fsWrite(PICS+'/蓝天.jpg',c.toDataURL('image/jpeg',0.9),'image');
+const c2=document.createElement('canvas');c2.width=320;c2.height=240;const y=c2.getContext('2d');y.fillStyle='#04070d';y.fillRect(0,0,320,240);for(let i=0;i<140;i++){y.fillStyle='rgba(255,255,255,'+(Math.random()*.9+.1)+')';y.fillRect(Math.random()*320,Math.random()*240,Math.random()<.1?2:1,1);}y.fillStyle='#ffe9a0';y.beginPath();y.arc(250,60,22,0,7);y.fill();
+fsWrite(PICS+'/星空.jpg',c2.toDataURL('image/jpeg',0.9),'image');}catch(e){}
+}
+
+/* ==================== 窗口管理器 ==================== */
+let widSeq=0,zTop=100,activeWin=null;
+const WINDOWS={};
+function createWindow(o){
+  const id='w'+(++widSeq);
+  const el=ce('div','window');el.id=id;el.style.pointerEvents='auto';
+  const dw=$('#desktop-wrap').clientWidth,dh=$('#desktop-wrap').clientHeight;
+  let W=Math.min(o.width||520,dw-10),H=Math.min(o.height||400,dh-10);
+  el.style.width=W+'px';el.style.height=H+'px';
+  el.style.left=(o.x!=null?o.x:Math.max(4,Math.min(60+((widSeq*26)%180),dw-W-10)))+'px';
+  el.style.top=(o.y!=null?o.y:Math.max(4,Math.min(40+((widSeq*22)%120),dh-H-10)))+'px';
+  el.innerHTML='<div class="titlebar"><div class="tb-left"><span class="tb-icon">'+(o.icon||'🗔')+'</span><span class="tb-title"></span></div>'+
+   '<div class="tb-btns">'+(o.noMin?'':'<div class="tbb" data-a="min" title="最小化">▁</div>')+(o.noMax?'':'<div class="tbb" data-a="max" title="最大化">□</div>')+'<div class="tbb close" data-a="close" title="关闭">✕</div></div></div>'+
+   '<div class="win-body"></div>'+(o.noResize?'':'<div class="rsz"></div>');
+  $('#wins').appendChild(el);
+  const win={id,el,icon:o.icon||'🗔',body:el.querySelector('.win-body'),minimized:false,maxed:false,prevRect:null,onClose:o.onClose,app:o.app};
+  win.setTitle=t=>{win.title=t;el.querySelector('.tb-title').textContent=t;if(win.tab)win.tab.querySelector('.tt').textContent=t;};
+  win.setTitle(o.title||'窗口');
+  win.close=()=>{if(win.onClose&&win.onClose()===false)return;el.remove();removeTab(win);delete WINDOWS[id];if(activeWin===win)activeWin=null;};
+  win.minimize=()=>{win.minimized=true;el.style.display='none';if(win.tab)win.tab.classList.remove('active');if(activeWin===win)activeWin=null;};
+  win.restore=()=>{win.minimized=false;el.style.display='flex';focusWindow(win);};
+  win.toggleMax=()=>{if(win.maxed){win.maxed=false;el.classList.remove('maxed');if(win.prevRect){el.style.left=win.prevRect.l;el.style.top=win.prevRect.t;el.style.width=win.prevRect.w;el.style.height=win.prevRect.h;}}else{win.prevRect={l:el.style.left,t:el.style.top,w:el.style.width,h:el.style.height};win.maxed=true;el.classList.add('maxed');}};
+  win.focus=()=>focusWindow(win);
+  WINDOWS[id]=win;
+  // 标题栏按钮
+  el.querySelectorAll('.tbb').forEach(b=>{b.addEventListener('mousedown',e=>e.stopPropagation());b.addEventListener('click',e=>{e.stopPropagation();sndClick();const a=b.dataset.a;if(a==='close')win.close();else if(a==='min')win.minimize();else if(a==='max')win.toggleMax();});});
+  // 拖动
+  const tb=el.querySelector('.titlebar');
+  tb.addEventListener('dblclick',e=>{if(!o.noMax&&!e.target.closest('.tbb'))win.toggleMax();});
+  tb.addEventListener('pointerdown',e=>{if(e.target.closest('.tbb')||win.maxed)return;const sx=e.clientX,sy=e.clientY,ol=el.offsetLeft,ot=el.offsetTop;
+    const mv=ev=>{el.style.left=Math.max(-W+80,ol+ev.clientX-sx)+'px';el.style.top=Math.max(0,Math.min(dhNow()-24,ot+ev.clientY-sy))+'px';};
+    const up=()=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);};
+    document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);});
+  // 调整大小
+  const rh=el.querySelector('.rsz');
+  if(rh)rh.addEventListener('pointerdown',e=>{e.stopPropagation();const sx=e.clientX,sy=e.clientY,ow=el.offsetWidth,oh=el.offsetHeight;
+    const mv=ev=>{el.style.width=Math.max(230,ow+ev.clientX-sx)+'px';el.style.height=Math.max(130,oh+ev.clientY-sy)+'px';};
+    const up=()=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);};
+    document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);});
+  el.addEventListener('mousedown',()=>focusWindow(win));
+  addTab(win);focusWindow(win);
+  return win;
+}
+function dhNow(){return $('#desktop-wrap').clientHeight;}
+function focusWindow(win){if(activeWin===win&&!win.minimized){win.el.style.zIndex=++zTop;return;}
+ Object.values(WINDOWS).forEach(w=>{w.el.classList.add('inactive');if(w.tab)w.tab.classList.remove('active');});
+ win.el.classList.remove('inactive');win.el.style.zIndex=++zTop;activeWin=win;if(win.tab)win.tab.classList.add('active');}
+function addTab(win){const t=ce('div','ttab','<span>'+win.icon+'</span><span class="tt">'+esc(win.title)+'</span>');t.querySelector('.tt').textContent=win.title;
+ t.onclick=()=>{sndClick();if(win.minimized)win.restore();else if(activeWin===win)win.minimize();else focusWindow(win);};
+ $('#task-tabs').appendChild(t);win.tab=t;}
+function removeTab(win){if(win.tab)win.tab.remove();}
+
+/* ==================== 下拉菜单 / 右键菜单 ==================== */
+let openMenuEl=null;
+function closeMenus(){if(openMenuEl){openMenuEl.remove();openMenuEl=null;}document.querySelectorAll('.menubar .mi.open').forEach(m=>m.classList.remove('open'));}
+function showMenu(x,y,items){closeMenus();const m=ce('div','dropmenu');
+ items.forEach(it=>{if(it.sep){m.appendChild(ce('div','dsep'));return;}
+  const d=ce('div','dmi'+(it.dis?' dis':''));d.innerHTML=(it.icon?'<span class="dico">'+it.icon+'</span>':'')+esc(it.label);
+  if(!it.dis)d.onclick=()=>{closeMenus();sndClick();it.action&&it.action();};
+  m.appendChild(d);});
+ document.body.appendChild(m);
+ const mw=m.offsetWidth,mh=m.offsetHeight;
+ if(x+mw>innerWidth)x=innerWidth-mw-4;if(y+mh>innerHeight)y=y-mh;
+ m.style.left=x+'px';m.style.top=Math.max(0,y)+'px';openMenuEl=m;return m;}
+function buildMenuBar(spec){const bar=ce('div','menubar');
+ spec.forEach(menu=>{const mi=ce('div','mi',esc(menu.label));
+  mi.onclick=e=>{e.stopPropagation();if(mi.classList.contains('open')){closeMenus();return;}
+   const r=mi.getBoundingClientRect();showMenu(r.left,r.bottom,menu.items);mi.classList.add('open');};
+  bar.appendChild(mi);});
+ return bar;}
+document.addEventListener('mousedown',e=>{if(!e.target.closest('.dropmenu')&&!e.target.closest('.menubar .mi'))closeMenus();});
+
+/* ==================== 对话框 ==================== */
+function msgbox(opt){const icons={info:'ℹ️',warn:'⚠️',error:'❌',question:'❓',ok:'✅'};
+ if(opt.icon==='error')sndError();else sndDing();
+ const win=createWindow({title:opt.title||'系统消息',icon:icons[opt.icon]||'ℹ️',width:330,height:150,noResize:true,noMax:true,noMin:true,x:(innerWidth-330)/2,y:(dhNow()-150)/2.4});
+ const body=ce('div','dlg-body','<div class="dlg-icon">'+(icons[opt.icon]||'ℹ️')+'</div><div class="dlg-text">'+ (opt.html?opt.text:esc(opt.text)) +'</div>');
+ const btns=ce('div','dlg-btns');
+ (opt.buttons||['确定']).forEach((b,i)=>{const bt=ce('button','xbtn',esc(b));bt.onclick=()=>{win.close();opt.cb&&opt.cb(i,b);};btns.appendChild(bt);});
+ win.body.appendChild(body);win.body.appendChild(btns);win.body.style.background='#ece9d8';return win;}
+
+function fileDialog(opt){ // {mode:'open'|'save', start, defName, filter, cb}
+ let cwd=opt.start||DOCS;
+ const win=createWindow({title:opt.mode==='save'?'另存为':'打开',icon:opt.mode==='save'?'💾':'📂',width:440,height:340,noMax:true,noMin:true});
+ win.body.innerHTML='<div class="addrbar"><span>查找范围:</span><input class="xinput fd-path" readonly style="flex:1"><button class="xbtn fd-up" style="min-width:40px">⬆</button></div>'+
+  '<div class="exp-main fd-list" style="border:1px solid #7f9db9;margin:6px;flex:1"></div>'+
+  '<div style="display:flex;gap:8px;align-items:center;padding:4px 10px"><span>文件名:</span><input class="xinput fd-name" style="flex:1"></div>'+
+  '<div class="dlg-btns" style="justify-content:flex-end;padding:8px 10px"><button class="xbtn fd-ok">'+(opt.mode==='save'?'保存':'打开')+'</button><button class="xbtn fd-cancel">取消</button></div>';
+ const list=win.body.querySelector('.fd-list'),pathI=win.body.querySelector('.fd-path'),nameI=win.body.querySelector('.fd-name');
+ nameI.value=opt.defName||'';
+ function render(){pathI.value=cwd.replace(/\//g,'\\');list.innerHTML='';const dir=fsGet(cwd);if(!dir)return;
+  Object.values(dir.children).sort((a,b)=>(a.type===b.type?a.name.localeCompare(b.name):(a.type==='dir'?-1:1))).forEach(node=>{
+   if(node.type==='file'&&opt.filter&&!opt.filter(node))return;
+   const f=ce('div','fitem','<div class="fi">'+fileIcon(node)+'</div><div class="fn">'+esc(node.name)+'</div>');
+   f.ondblclick=()=>{if(node.type==='dir'){cwd=cwd+'/'+node.name;render();}else{nameI.value=node.name;ok();}};
+   f.onclick=()=>{list.querySelectorAll('.sel').forEach(s=>s.classList.remove('sel'));f.classList.add('sel');if(node.type==='file')nameI.value=node.name;};
+   list.appendChild(f);});}
+ function ok(){const nm=nameI.value.trim();if(!nm)return;const full=cwd+'/'+nm;
+  if(opt.mode==='open'){const node=fsGet(full);if(!node||node.type!=='file'){msgbox({title:'打开',text:'找不到文件 "'+nm+'"。\n请检查文件名是否正确。',icon:'warn'});return;}}
+  else{const node=fsGet(full);if(node){msgbox({title:'确认另存为',text:nm+' 已存在。\n要替换它吗?',icon:'warn',buttons:['是','否'],cb:i=>{if(i===0){win.close();opt.cb(full);}}});return;}}
+  win.close();opt.cb(full);}
+ win.body.querySelector('.fd-up').onclick=()=>{if(cwd!=='C:'){cwd=fsJoin(cwd,'..');render();}};
+ win.body.querySelector('.fd-ok').onclick=ok;
+ win.body.querySelector('.fd-cancel').onclick=()=>win.close();
+ nameI.addEventListener('keydown',e=>{if(e.key==='Enter')ok();});
+ render();}
+
+/* ==================== 桌面图标 ==================== */
+const SYS_ICONS=[
+ {n:'我的电脑',i:'💻',open:()=>openExplorer('C:')},
+ {n:'我的文档',i:'📂',open:()=>openExplorer(DOCS)},
+ {n:'回收站',i:'🗑️',open:openRecycle},
+ {n:'Internet Explorer',i:'🌐',open:()=>openIE()},
+ {n:'扫雷',i:'💣',open:openMine},
+ {n:'贪吃蛇',i:'🐍',open:openSnake},
+ {n:'画图',i:'🎨',open:()=>openPaint()},
+ {n:'记事本',i:'📝',open:()=>openNotepad()},
+ {n:'命令提示符',i:'⬛',open:openCmd},
+ {n:'代码编辑器',i:'👨‍💻',open:openCode},
+ {n:'Windows Media Player',i:'📀',open:openWMP},
+ {n:'Windows Movie Maker',i:'🎬',open:openMovieMaker},
+ {n:'计算器',i:'🧮',open:openCalc},
+];
+function renderDesktop(){const box=$('#icons');box.innerHTML='';
+ const make=(name,icon,openFn,ctxItems)=>{
+  const d=ce('div','dicon','<div class="ig">'+icon+'</div><div class="lbl">'+esc(name)+'</div>');
+  d.onclick=e=>{e.stopPropagation();document.querySelectorAll('.dicon.sel').forEach(s=>s.classList.remove('sel'));d.classList.add('sel');};
+  d.ondblclick=()=>{sndClick();openFn();};
+  d.oncontextmenu=e=>{e.preventDefault();e.stopPropagation();showMenu(e.clientX,e.clientY,[{label:'打开',action:openFn},...(ctxItems||[])]);};
+  box.appendChild(d);};
+ SYS_ICONS.forEach(s=>make(s.n,s.i,s.open));
+ const dd=fsGet(DESK);if(dd)Object.values(dd.children).forEach(node=>{
+  const p=DESK+'/'+node.name;
+  make(node.name,fileIcon(node),()=>openFSNode(p,node),[
+   {label:'删除',icon:'🗑️',action:()=>{recycleItem(p);renderDesktop();}},
+   {label:'重命名',action:()=>renamePath(p,renderDesktop)}]);});}
+function openFSNode(path,node){node=node||fsGet(path);if(!node)return;
+ if(node.type==='dir')return openExplorer(path);
+ const n=node.name.toLowerCase();
+ if(node.mime==='image'||/\.(png|jpg|jpeg|bmp|gif)$/.test(n))return openViewer(path);
+ if(/\.(js|py|html|css)$/.test(n))return openCode(path);
+ if(/\.(webm)$/.test(n))return openVideoPlayer(path);
+ return openNotepad(path);}
+function renamePath(path,after){const node=fsGet(path);if(!node)return;
+ const win=createWindow({title:'重命名',icon:'✏️',width:300,height:130,noResize:true,noMax:true,noMin:true});
+ win.body.innerHTML='<div style="padding:14px"><div style="margin-bottom:6px">新名称:</div><input class="xinput rn" style="width:100%"></div><div class="dlg-btns"><button class="xbtn ok">确定</button><button class="xbtn ca">取消</button></div>';
+ const inp=win.body.querySelector('.rn');inp.value=node.name;inp.focus();inp.select();
+ const doIt=()=>{const nn=inp.value.trim();if(!nn)return;const dirP=path.slice(0,path.lastIndexOf('/'));const dir=fsGet(dirP);
+  if(dir.children[nn]&&nn!==node.name){msgbox({title:'重命名',text:'已存在同名文件。',icon:'warn'});return;}
+  delete dir.children[node.name];node.name=nn;dir.children[nn]=node;win.close();after&&after();};
+ win.body.querySelector('.ok').onclick=doIt;win.body.querySelector('.ca').onclick=()=>win.close();
+ inp.addEventListener('keydown',e=>{if(e.key==='Enter')doIt();});}
+
+/* 回收站 */
+const recycleBin=[];
+function recycleItem(path){const node=fsDelete(path);if(node){recycleBin.push({node,from:path});sndRecycle();}}
+function openRecycle(){
+ const win=createWindow({title:'回收站',icon:'🗑️',width:460,height:340,app:'recycle'});
+ win.body.innerHTML='<div class="toolbar"><div class="tbtn rb-restore">↩️ 还原选中项</div><div class="tbtn rb-empty">🧹 清空回收站</div></div><div class="exp-main rb-list" style="background:#fff;flex:1"></div><div class="statusbar"><div class="pane rb-st" style="flex:1"></div></div>';
+ const list=win.body.querySelector('.rb-list');let selIdx=-1;
+ function render(){list.innerHTML='';
+  if(!recycleBin.length){list.innerHTML='<div style="grid-column:1/-1;color:#888;padding:30px;text-align:center">回收站是空的。<br><br>把不要的东西拖（点）进来吧。</div>';}
+  recycleBin.forEach((it,i)=>{const f=ce('div','fitem','<div class="fi">'+fileIcon(it.node)+'</div><div class="fn">'+esc(it.node.name)+'</div>');
+   f.onclick=()=>{list.querySelectorAll('.sel').forEach(s=>s.classList.remove('sel'));f.classList.add('sel');selIdx=i;};list.appendChild(f);});
+  win.body.querySelector('.rb-st').textContent=recycleBin.length+' 个对象';}
+ win.body.querySelector('.rb-restore').onclick=()=>{if(selIdx<0||!recycleBin[selIdx])return;const it=recycleBin.splice(selIdx,1)[0];
+  const dirP=it.from.slice(0,it.from.lastIndexOf('/'));fsMkdir(dirP).children[it.node.name]=it.node;selIdx=-1;render();renderDesktop();};
+ win.body.querySelector('.rb-empty').onclick=()=>{if(!recycleBin.length)return;
+  msgbox({title:'确认删除多个文件',text:'确实要删除这 '+recycleBin.length+' 项吗?',icon:'question',buttons:['是','否'],cb:i=>{if(i===0){recycleBin.length=0;sndRecycle();render();}}});};
+ render();}
+
+/* ==================== 任务栏 / 时钟 / 音量 ==================== */
+function tickClock(){const d=new Date();$('#clock').textContent=d.getHours()+':'+pad(d.getMinutes());$('#clock').title=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][d.getDay()]+' '+d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';}
+setInterval(tickClock,5000);
+$('#vol-ico').onclick=e=>{e.stopPropagation();closeMenus();
+ const m=ce('div','dropmenu');m.style.padding='10px';m.innerHTML='<div style="font-size:11px;margin-bottom:6px">音量</div><input type="range" min="0" max="100" value="'+Math.round(volume*100)+'" style="width:120px">';
+ const r=m.querySelector('input');r.oninput=()=>{setVolume(r.value/100);$('#vol-ico').textContent=r.value==0?'🔇':'🔊';};
+ r.onchange=()=>sndDing();
+ document.body.appendChild(m);const rect=$('#vol-ico').getBoundingClientRect();
+ m.style.left=(rect.left-60)+'px';m.style.top=(rect.top-m.offsetHeight-8)+'px';openMenuEl=m;};
+
+/* ==================== 开始菜单 ==================== */
+function buildStartMenu(){
+ const L=$('#sm-left'),R=$('#sm-right');
+ const li=(icon,name,sub,fn)=>{const d=ce('div','smi','<span class="si">'+icon+'</span><span class="sl"><b>'+esc(name)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>');d.onclick=()=>{hideStart();fn();};return d;};
+ L.appendChild(li('🌐','Internet','Internet Explorer',()=>openIE()));
+ L.appendChild(li('📧','电子邮件','Outlook Express',()=>msgbox({title:'Outlook Express',text:'无法连接到邮件服务器。\n\n（毕竟现在是 2001 年，请先接好电话线。）',icon:'error'})));
+ L.appendChild(ce('div','sm-sep'));
+ [['📝','记事本',()=>openNotepad()],['🎨','画图',()=>openPaint()],['⬛','命令提示符',openCmd],['🧮','计算器',openCalc],['💣','扫雷',openMine],['🐍','贪吃蛇',openSnake],['📀','Windows Media Player',openWMP],['🎬','Windows Movie Maker',openMovieMaker],['👨‍💻','代码编辑器',openCode]].forEach(a=>L.appendChild(li(a[0],a[1],null,a[2])));
+ const all=ce('div','smi','<span class="si">🟩</span><span class="sl"><b>所有程序</b></span><span style="margin-left:auto">▸</span>');all.id='sm-allprog';
+ all.onclick=()=>msgbox({title:'所有程序',text:'……就这些了，都摆在外面呢。\n2001 年的硬盘装不下太多东西。',icon:'info'});
+ L.appendChild(ce('div','sm-sep'));L.appendChild(all);
+ const ri=(icon,name,fn,bold)=>{const d=ce('div','smi','<span class="si">'+icon+'</span><span class="sl">'+(bold?'<b>':'')+esc(name)+(bold?'</b>':'')+'</span>');d.onclick=()=>{hideStart();fn();};return d;};
+ R.appendChild(ri('📂','我的文档',()=>openExplorer(DOCS),true));
+ R.appendChild(ri('🖼️','图片收藏',()=>openExplorer(PICS),true));
+ R.appendChild(ri('💻','我的电脑',()=>openExplorer('C:'),true));
+ R.appendChild(ce('div','sm-sep'));
+ R.appendChild(ri('🎛️','控制面板',openDisplay));
+ R.appendChild(ri('📋','任务管理器',openTaskMgr));
+ R.appendChild(ce('div','sm-sep'));
+ R.appendChild(ri('❓','帮助和支持',()=>msgbox({title:'帮助和支持中心',text:'遇到问题？试试这三步：\n1. 重启\n2. 再重启一次\n3. 问问 Claude',icon:'question'})));
+ R.appendChild(ri('▶️','运行(R)...',openRun));}
+function toggleStart(e){e&&e.stopPropagation();const sm=$('#start-menu');
+ if(sm.style.display==='flex')hideStart();else{sndClick();sm.style.display='flex';$('#start-btn').classList.add('open');}}
+function hideStart(){$('#start-menu').style.display='none';$('#start-btn').classList.remove('open');}
+document.addEventListener('mousedown',e=>{if(!e.target.closest('#start-menu')&&!e.target.closest('#start-btn'))hideStart();});
+
+function openRun(){const win=createWindow({title:'运行',icon:'▶️',width:340,height:150,noResize:true,noMax:true,noMin:true,x:10,y:dhNow()-170});
+ win.body.innerHTML='<div style="padding:12px 14px;display:flex;gap:10px"><div style="font-size:28px">▶️</div><div style="flex:1"><div style="margin-bottom:6px;line-height:1.4">请键入程序、文件夹、文档或 Internet 资源的名称，Windows 将为您打开它。</div><div style="display:flex;gap:6px;align-items:center">打开:<input class="xinput run-i" style="flex:1"></div></div></div><div class="dlg-btns" style="justify-content:flex-end;padding-right:14px"><button class="xbtn ok">确定</button><button class="xbtn ca">取消</button></div>';
+ const inp=win.body.querySelector('.run-i');inp.focus();
+ const MAP={notepad:()=>openNotepad(),mspaint:()=>openPaint(),cmd:openCmd,calc:openCalc,winmine:openMine,snake:openSnake,iexplore:()=>openIE(),explorer:()=>openExplorer('C:'),moviemk:openMovieMaker,wmplayer:openWMP,mplayer:openWMP,code:()=>openCode(),taskmgr:openTaskMgr,regedit:()=>msgbox({title:'注册表编辑器',text:'还是别碰注册表了，相信我。',icon:'warn'})};
+ const go=()=>{const v=inp.value.trim().toLowerCase().replace(/\.exe$/,'');if(!v)return;win.close();
+  if(MAP[v])MAP[v]();else if(/^https?:|www\.|\./.test(v))openIE(inp.value.trim());
+  else msgbox({title:'运行',text:"Windows 找不到文件 '"+inp.value.trim()+"'。请确定文件名是否正确后，再试一次。",icon:'error'});};
+ win.body.querySelector('.ok').onclick=go;win.body.querySelector('.ca').onclick=()=>win.close();
+ inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});}
+
+/* ==================== 桌面右键菜单 ==================== */
+$('#desktop-wrap').addEventListener('contextmenu',e=>{if(e.target.closest('.window')||e.target.closest('.dicon'))return;e.preventDefault();
+ showMenu(e.clientX,e.clientY,[
+  {label:'查看(V)',dis:true},{label:'排列图标(I)',dis:true},{sep:true},
+  {label:'刷新(E)',icon:'🔄',action:()=>{$('#desktop-wrap').style.opacity=.6;setTimeout(()=>{$('#desktop-wrap').style.opacity=1;renderDesktop();},120);}},
+  {sep:true},
+  {label:'新建文件夹',icon:'📁',action:()=>{const n=uniqueName(DESK,'新建文件夹','');fsMkdir(DESK+'/'+n);renderDesktop();}},
+  {label:'新建文本文档',icon:'📄',action:()=>{const n=uniqueName(DESK,'新建 文本文档','.txt');fsWrite(DESK+'/'+n,'');renderDesktop();}},
+  {sep:true},
+  {label:'属性(R)',icon:'🖥️',action:openDisplay}]);});
+$('#desktop-wrap').addEventListener('click',e=>{if(!e.target.closest('.dicon'))document.querySelectorAll('.dicon.sel').forEach(s=>s.classList.remove('sel'));});
+
+/* ==================== 资源管理器 ==================== */
+function openExplorer(startPath){let cwd=startPath||'C:';const hist=[];
+ const win=createWindow({title:'我的电脑',icon:'💻',width:620,height:440,app:'explorer'});
+ win.body.innerHTML='<div class="toolbar"><div class="tbtn ex-back">⬅ 后退</div><div class="tbtn ex-up">⬆ 向上</div><span style="width:1px;height:18px;background:#aca899;margin:0 4px"></span><div class="tbtn ex-new">📁 新建文件夹</div><div class="tbtn ex-newtxt">📄 新建文本</div></div>'+
+ '<div class="addrbar"><span>地址(D)</span><input class="xinput ex-addr" style="flex:1"><button class="xbtn" style="min-width:54px" onclick="this.blur()">➡ 转到</button></div>'+
+ '<div style="display:flex;flex:1;overflow:hidden"><div class="exp-side"><div class="exp-card"><h4>系统任务 <span>≡</span></h4><div class="ecb">'+
+ '<div class="lnk ex-l-doc">📂 我的文档</div><div class="lnk ex-l-pic">🖼️ 图片收藏</div><div class="lnk ex-l-c">💿 本地磁盘 (C:)</div><div class="lnk ex-l-bin">🗑️ 回收站</div></div></div>'+
+ '<div class="exp-card"><h4>详细信息 <span>≡</span></h4><div class="ecb ex-detail" style="font-size:11px;line-height:1.7;color:#15428b">选择一个项目以查看其说明。</div></div></div>'+
+ '<div class="exp-main ex-list"></div></div>'+
+ '<div class="statusbar"><div class="pane ex-st" style="flex:1"></div><div class="pane">💻 我的电脑</div></div>';
+ const list=win.body.querySelector('.ex-list'),addr=win.body.querySelector('.ex-addr'),st=win.body.querySelector('.ex-st'),detail=win.body.querySelector('.ex-detail');
+ function nav(p,push=true){const node=fsGet(p);if(!node||node.type!=='dir'){msgbox({title:'资源管理器',text:'找不到 "'+p+'"。',icon:'error'});return;}
+  if(push&&cwd!==p)hist.push(cwd);cwd=p;render();}
+ function render(){const dir=fsGet(cwd);addr.value=cwd.replace(/\//g,'\\');win.setTitle(cwd==='C:'?'我的电脑':cwd.split('/').pop());
+  list.innerHTML='';const entries=Object.values(dir.children).sort((a,b)=>(a.type===b.type?a.name.localeCompare(b.name):(a.type==='dir'?-1:1)));
+  if(cwd==='C:'){const di=ce('div','fitem','<div class="fi">💿</div><div class="fn">本地磁盘 (C:)</div>');di.ondblclick=()=>nav('C:');list.appendChild(di);}
+  entries.forEach(node=>{const p=cwd+'/'+node.name;
+   const f=ce('div','fitem','<div class="fi">'+fileIcon(node)+'</div><div class="fn">'+esc(node.name)+'</div>');
+   f.onclick=e=>{e.stopPropagation();list.querySelectorAll('.sel').forEach(s=>s.classList.remove('sel'));f.classList.add('sel');
+    detail.innerHTML='<b>'+esc(node.name)+'</b><br>'+(node.type==='dir'?'文件夹':'文件 · '+(node.content?node.content.length:0)+' 字节')+(node.mtime?'<br>修改时间: '+node.mtime.toLocaleString():'');};
+   f.ondblclick=()=>{if(node.type==='dir')nav(p);else openFSNode(p,node);};
+   f.oncontextmenu=e=>{e.preventDefault();e.stopPropagation();showMenu(e.clientX,e.clientY,[
+    {label:'打开',action:()=>{if(node.type==='dir')nav(p);else openFSNode(p,node);}},
+    {sep:true},
+    {label:'删除',icon:'🗑️',action:()=>msgbox({title:'确认删除',text:'确实要把 "'+node.name+'" 放入回收站吗?',icon:'question',buttons:['是','否'],cb:i=>{if(i===0){recycleItem(p);render();renderDesktop();}}})},
+    {label:'重命名',action:()=>renamePath(p,render)}]);};
+   list.appendChild(f);});
+  st.textContent=entries.length+' 个对象';}
+ list.oncontextmenu=e=>{if(e.target!==list)return;e.preventDefault();showMenu(e.clientX,e.clientY,[
+  {label:'新建文件夹',icon:'📁',action:()=>{fsMkdir(cwd+'/'+uniqueName(cwd,'新建文件夹',''));render();renderDesktop();}},
+  {label:'新建文本文档',icon:'📄',action:()=>{fsWrite(cwd+'/'+uniqueName(cwd,'新建 文本文档','.txt'),'');render();renderDesktop();}},
+  {label:'刷新',action:render}]);};
+ win.body.querySelector('.ex-back').onclick=()=>{if(hist.length)nav(hist.pop(),false);};
+ win.body.querySelector('.ex-up').onclick=()=>{if(cwd!=='C:')nav(fsJoin(cwd,'..'));};
+ win.body.querySelector('.ex-new').onclick=()=>{fsMkdir(cwd+'/'+uniqueName(cwd,'新建文件夹',''));render();renderDesktop();};
+ win.body.querySelector('.ex-newtxt').onclick=()=>{fsWrite(cwd+'/'+uniqueName(cwd,'新建 文本文档','.txt'),'');render();renderDesktop();};
+ win.body.querySelector('.ex-l-doc').onclick=()=>nav(DOCS);
+ win.body.querySelector('.ex-l-pic').onclick=()=>nav(PICS);
+ win.body.querySelector('.ex-l-c').onclick=()=>nav('C:');
+ win.body.querySelector('.ex-l-bin').onclick=openRecycle;
+ addr.addEventListener('keydown',e=>{if(e.key==='Enter')nav(fsJoin('C:',addr.value.replace(/\\/g,'/')));});
+ nav(cwd,false);}
+
+/* ==================== 记事本 ==================== */
+let clippyShown=false;
+function openNotepad(path){let cur=path||null,dirty=false,wrap=false;
+ const win=createWindow({title:'无标题 - 记事本',icon:'📝',width:520,height:400,app:'notepad'});
+ const ta=ce('textarea','np-text');ta.spellcheck=false;
+ const status=ce('div','statusbar','<div class="pane np-st" style="flex:1">行 1, 列 1</div>');
+ function refreshTitle(){win.setTitle((dirty?'*':'')+(cur?cur.split('/').pop():'无标题')+' - 记事本');}
+ function load(p){const node=fsGet(p);if(node){ta.value=node.content||'';cur=p;dirty=false;refreshTitle();}}
+ function save(as){const doSave=p=>{fsWrite(p,ta.value);cur=p;dirty=false;refreshTitle();renderDesktop();};
+  if(cur&&!as)doSave(cur);else fileDialog({mode:'save',start:DOCS,defName:cur?cur.split('/').pop():'无标题.txt',cb:doSave});}
+ const mb=buildMenuBar([
+  {label:'文件(F)',items:[
+   {label:'新建(N)',action:()=>{ta.value='';cur=null;dirty=false;refreshTitle();}},
+   {label:'打开(O)...',action:()=>fileDialog({mode:'open',start:DOCS,filter:n=>n.mime!=='image',cb:load})},
+   {label:'保存(S)',action:()=>save(false)},
+   {label:'另存为(A)...',action:()=>save(true)},
+   {sep:true},{label:'退出(X)',action:()=>win.close()}]},
+  {label:'编辑(E)',items:[
+   {label:'全选(A)',action:()=>{ta.focus();ta.select();}},
+   {label:'时间/日期(D)',action:()=>{const d=new Date();const s=d.getHours()+':'+pad(d.getMinutes())+' '+d.toLocaleDateString();
+    const st=ta.selectionStart;ta.setRangeText(s,st,ta.selectionEnd,'end');dirty=true;refreshTitle();}}]},
+  {label:'格式(O)',items:[
+   {label:'自动换行(W)',action:()=>{wrap=!wrap;ta.classList.toggle('wrap',wrap);}},
+   {label:'字体(F)...',action:()=>msgbox({title:'字体',text:'就用 Lucida Console 吧，多有年代感。',icon:'info'})}]},
+  {label:'帮助(H)',items:[{label:'关于记事本(A)',action:()=>msgbox({title:'关于记事本',text:'Windows XP 记事本\n版本 5.1 (Build 2600.xpsp.claude)\n\n在浏览器里跑了二十多年，还是这么快。',icon:'info'})}]}]);
+ win.body.appendChild(mb);win.body.appendChild(ta);win.body.appendChild(status);
+ ta.addEventListener('input',()=>{if(!dirty){dirty=true;refreshTitle();}
+  if(!clippyShown&&ta.value.length>40){clippyShown=true;showClippy('看起来您正在写一封信。\n需要帮助吗？\n\n<span class="lnkbtn" onclick="hideClippy()">不用了，谢谢</span> &nbsp; <span class="lnkbtn" onclick="hideClippy();msgbox({title:\'Office 助手\',text:\'其实我也不知道怎么帮你，我只是想出来透透气。\',icon:\'info\'})">好的</span>');}});
+ ta.addEventListener('keyup',()=>{const v=ta.value.slice(0,ta.selectionStart).split('\n');win.body.querySelector('.np-st').textContent='行 '+v.length+', 列 '+(v[v.length-1].length+1);});
+ win.onClose=()=>{if(dirty){msgbox({title:'记事本',text:(cur?cur.split('/').pop():'无标题')+' 的文字已经改变。\n\n想保存文件吗?',icon:'warn',buttons:['是','否','取消'],cb:i=>{if(i===0){save(false);win.onClose=null;win.close();}else if(i===1){win.onClose=null;win.close();}}});return false;}};
+ if(path)load(path);setTimeout(()=>ta.focus(),50);}
+function showClippy(html){$('#clippy-text').innerHTML=html;$('#clippy').style.display='block';}
+function hideClippy(){$('#clippy').style.display='none';}
+
+/* ==================== 图片查看器 ==================== */
+function openViewer(path){const node=fsGet(path);if(!node)return;let zoom=1;
+ const win=createWindow({title:node.name+' - Windows 图片和传真查看器',icon:'🖼️',width:480,height:420});
+ win.body.innerHTML='<div style="flex:1;background:#3b3b42;display:flex;align-items:center;justify-content:center;overflow:auto"><img style="box-shadow:0 0 14px rgba(0,0,0,.6);image-rendering:pixelated"></div>'+
+ '<div class="toolbar" style="justify-content:center;border-top:1px solid #aca899;border-bottom:none"><div class="tbtn v-out">➖ 缩小</div><div class="tbtn v-in">➕ 放大</div><div class="tbtn v-paint">🎨 在画图中编辑</div></div>';
+ const img=win.body.querySelector('img');img.src=node.content;
+ const z=()=>{img.style.width=(320*zoom)+'px';};z();
+ win.body.querySelector('.v-in').onclick=()=>{zoom=Math.min(4,zoom*1.25);z();};
+ win.body.querySelector('.v-out').onclick=()=>{zoom=Math.max(.25,zoom/1.25);z();};
+ win.body.querySelector('.v-paint').onclick=()=>{openPaint(path);};}
+
+/* ==================== 画图 ==================== */
+const PAINT_COLORS=['#000000','#808080','#800000','#808000','#008000','#008080','#000080','#800080','#808040','#004040','#0080ff','#004080','#8000ff','#804000','#ffffff','#c0c0c0','#ff0000','#ffff00','#00ff00','#00ffff','#0000ff','#ff00ff','#ffff80','#00ff80','#80ffff','#8080ff','#ff0080','#ff8040'];
+let paintWin=null,paintCanvasRef=null;
+function openPaint(path){
+ const win=createWindow({title:'未命名 - 画图',icon:'🎨',width:640,height:500,app:'paint'});paintWin=win;
+ let cur=path||null,tool='pencil',fg='#000000',bg='#ffffff',size=2,drawing=false,sx=0,sy=0,snapshot=null;
+ const undoStack=[];
+ const tools=[['pencil','✏️','铅笔'],['brush','🖌️','刷子'],['eraser','🧽','橡皮'],['fill','🪣','填充'],['spray','💨','喷枪'],['line','📏','直线'],['rect','▭','矩形'],['ellipse','⬭','椭圆'],['picker','💉','取色']];
+ win.body.innerHTML='';
+ const mb=buildMenuBar([
+  {label:'文件(F)',items:[
+   {label:'新建(N)',action:()=>{pushUndo();ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);cur=null;win.setTitle('未命名 - 画图');}},
+   {label:'打开(O)...',action:()=>fileDialog({mode:'open',start:PICS,filter:n=>n.mime==='image',cb:loadImg})},
+   {label:'保存(S)',action:()=>save(false)},{label:'另存为(A)...',action:()=>save(true)},
+   {sep:true},{label:'退出(X)',action:()=>win.close()}]},
+  {label:'编辑(E)',items:[{label:'撤消(U)  Ctrl+Z',action:undo},{label:'清除图像',action:()=>{pushUndo();ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);}}]},
+  {label:'帮助(H)',items:[{label:'关于画图',action:()=>msgbox({title:'关于画图',text:'Windows XP 画图\n\n小时候的 Photoshop。\n提示：保存后可以在 Movie Maker 里做成动画！',icon:'info'})}]}]);
+ win.body.appendChild(mb);
+ const pb=ce('div','paint-body');
+ const tp=ce('div','paint-tools');
+ tools.forEach(t=>{const b=ce('div','ptool'+(t[0]===tool?' sel':''),t[1]);b.title=t[2];b.dataset.t=t[0];
+  b.onclick=()=>{tool=t[0];tp.querySelectorAll('.sel').forEach(s=>s.classList.remove('sel'));b.classList.add('sel');};tp.appendChild(b);});
+ const sizeBox=ce('div',null,'<div style="grid-column:1/-1;margin-top:8px;font-size:10px;text-align:center">粗细</div>');tp.appendChild(sizeBox);
+ const sr=ce('input');sr.type='range';sr.min=1;sr.max=24;sr.value=size;sr.style.cssText='grid-column:1/-1;width:54px';sr.oninput=()=>size=+sr.value;tp.appendChild(sr);
+ const cwrap=ce('div','paint-canvas-wrap');
+ const cv=ce('canvas');cv.width=560;cv.height=380;cwrap.appendChild(cv);
+ pb.appendChild(tp);pb.appendChild(cwrap);win.body.appendChild(pb);
+ const bottom=ce('div','paint-bottom');
+ const fgbg=ce('div','fgbg','<div class="fg"></div><div class="bg"></div>');
+ const pal=ce('div','pal');
+ PAINT_COLORS.forEach(c=>{const i=ce('i');i.style.background=c;
+  i.onmousedown=e=>{e.preventDefault();if(e.button===2)return;fg=c;upSw();};
+  i.oncontextmenu=e=>{e.preventDefault();bg=c;upSw();};pal.appendChild(i);});
+ bottom.appendChild(fgbg);bottom.appendChild(pal);
+ bottom.appendChild(ce('div',null,'<span style="font-size:10px;color:#666">左键前景 / 右键背景</span>'));
+ win.body.appendChild(bottom);
+ win.body.appendChild(ce('div','statusbar','<div class="pane p-st" style="flex:1">提示：用"填充"工具一键涂满封闭区域</div><div class="pane p-xy">0, 0</div>'));
+ const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+ ctx.lineCap='round';ctx.lineJoin='round';
+ paintCanvasRef=cv;
+ function upSw(){fgbg.querySelector('.fg').style.background=fg;fgbg.querySelector('.bg').style.background=bg;}upSw();
+ function pushUndo(){undoStack.push(ctx.getImageData(0,0,cv.width,cv.height));if(undoStack.length>20)undoStack.shift();}
+ function undo(){if(undoStack.length)ctx.putImageData(undoStack.pop(),0,0);}
+ function pos(e){const r=cv.getBoundingClientRect();return [Math.round((e.clientX-r.left)*cv.width/r.width),Math.round((e.clientY-r.top)*cv.height/r.height)];}
+ function loadImg(p){const node=fsGet(p);if(!node)return;const im=new Image();im.onload=()=>{pushUndo();ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);ctx.drawImage(im,0,0);};im.src=node.content;cur=p;win.setTitle(node.name+' - 画图');}
+ function save(as){const doSave=p=>{if(!/\.(png|jpg|jpeg|bmp)$/i.test(p))p+='.png';fsWrite(p,cv.toDataURL('image/png'),'image');cur=p;win.setTitle(p.split('/').pop()+' - 画图');renderDesktop();
+   win.body.querySelector('.p-st').textContent='已保存到 '+p.replace(/\//g,'\\');};
+  if(cur&&!as)doSave(cur);else fileDialog({mode:'save',start:PICS,defName:'我的杰作.png',cb:doSave});}
+ function floodFill(x,y,colorHex){const img=ctx.getImageData(0,0,cv.width,cv.height);const d=new Uint32Array(img.data.buffer);
+  const W=cv.width,H=cv.height;const t=document.createElement('canvas');t.width=t.height=1;const tx=t.getContext('2d');tx.fillStyle=colorHex;tx.fillRect(0,0,1,1);
+  const rep=new Uint32Array(tx.getImageData(0,0,1,1).data.buffer)[0];
+  const target=d[y*W+x];if(target===rep)return;
+  const stack=[y*W+x];
+  while(stack.length){const i=stack.pop();if(d[i]!==target)continue;d[i]=rep;
+   const px=i%W;if(px>0)stack.push(i-1);if(px<W-1)stack.push(i+1);if(i>=W)stack.push(i-W);if(i<W*(H-1))stack.push(i+W);}
+  ctx.putImageData(img,0,0);}
+ function spray(x,y,color){ctx.fillStyle=color;for(let i=0;i<size*4;i++){const a=Math.random()*Math.PI*2,r=Math.random()*size*2.2;ctx.fillRect(x+Math.cos(a)*r,y+Math.sin(a)*r,1,1);}}
+ let useColor='#000';
+ cv.addEventListener('contextmenu',e=>e.preventDefault());
+ cv.addEventListener('pointerdown',e=>{e.preventDefault();const[x,y]=pos(e);useColor=e.button===2?bg:fg;
+  if(tool==='picker'){const p=ctx.getImageData(x,y,1,1).data;const hex='#'+[p[0],p[1],p[2]].map(v=>v.toString(16).padStart(2,'0')).join('');if(e.button===2)bg=hex;else fg=hex;upSw();return;}
+  pushUndo();
+  if(tool==='fill'){floodFill(x,y,useColor);return;}
+  drawing=true;sx=x;sy=y;
+  if(tool==='line'||tool==='rect'||tool==='ellipse')snapshot=ctx.getImageData(0,0,cv.width,cv.height);
+  else{ctx.strokeStyle=tool==='eraser'?'#fff':useColor;ctx.lineWidth=tool==='pencil'?Math.max(1,size/2):(tool==='eraser'?size*2:size);
+   if(tool==='spray')spray(x,y,useColor);else{ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+0.1,y+0.1);ctx.stroke();}}
+  cv.setPointerCapture(e.pointerId);});
+ cv.addEventListener('pointermove',e=>{const[x,y]=pos(e);win.body.querySelector('.p-xy').textContent=x+', '+y;
+  if(!drawing)return;
+  if(tool==='spray'){spray(x,y,useColor);return;}
+  if(tool==='line'||tool==='rect'||tool==='ellipse'){ctx.putImageData(snapshot,0,0);ctx.strokeStyle=useColor;ctx.lineWidth=size;
+   ctx.beginPath();
+   if(tool==='line'){ctx.moveTo(sx,sy);ctx.lineTo(x,y);}
+   else if(tool==='rect')ctx.rect(Math.min(sx,x),Math.min(sy,y),Math.abs(x-sx),Math.abs(y-sy));
+   else ctx.ellipse((sx+x)/2,(sy+y)/2,Math.abs(x-sx)/2,Math.abs(y-sy)/2,0,0,Math.PI*2);
+   ctx.stroke();return;}
+  ctx.lineTo(x,y);ctx.stroke();});
+ const endDraw=()=>{drawing=false;snapshot=null;};
+ cv.addEventListener('pointerup',endDraw);cv.addEventListener('pointercancel',endDraw);
+ win.el.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key.toLowerCase()==='z'){e.preventDefault();undo();}});
+ win.el.tabIndex=-1;
+ if(path)loadImg(path);}
+
+/* ==================== 计算器 ==================== */
+function openCalc(){const win=createWindow({title:'计算器',icon:'🧮',width:240,height:300,noResize:true,noMax:true});
+ win.body.innerHTML='<div style="padding:8px;display:flex;flex-direction:column;gap:6px;flex:1">'+
+ '<input class="xinput c-disp" readonly style="text-align:right;font-size:18px;font-family:\'Lucida Console\',monospace;padding:6px" value="0">'+
+ '<div class="c-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex:1"></div></div>';
+ const disp=win.body.querySelector('.c-disp'),grid=win.body.querySelector('.c-grid');
+ let acc=null,op=null,fresh=true;
+ const show=v=>{let s=String(v);if(s.length>14)s=Number(v).toPrecision(10).replace(/\.?0+$/,'');disp.value=s;};
+ function press(k){
+  if(/\d/.test(k)){if(fresh){disp.value=k;fresh=false;}else if(disp.value.length<14)disp.value=(disp.value==='0'?k:disp.value+k);return;}
+  if(k==='.'){if(fresh){disp.value='0.';fresh=false;}else if(!disp.value.includes('.'))disp.value+='.';return;}
+  if(k==='C'){acc=null;op=null;fresh=true;disp.value='0';return;}
+  if(k==='±'){disp.value=String(-parseFloat(disp.value));return;}
+  if(k==='√'){show(Math.sqrt(parseFloat(disp.value)));fresh=true;return;}
+  if(k==='%'){show(parseFloat(disp.value)/100);fresh=true;return;}
+  const v=parseFloat(disp.value);
+  if(k==='='){if(op&&acc!=null){show(calc(acc,v,op));acc=null;op=null;fresh=true;}return;}
+  if(op&&acc!=null&&!fresh)acc=calc(acc,v,op);else if(acc==null)acc=v;
+  show(acc);op=k;fresh=true;}
+ function calc(a,b,o){switch(o){case '+':return a+b;case '−':return a-b;case '×':return a*b;case '÷':return b===0?(sndError(),'除数不能为零'):a/b;}return b;}
+ [['C','±','√','÷'],['7','8','9','×'],['4','5','6','−'],['1','2','3','+'],['0','.','%','=']].flat().forEach(k=>{
+  const b=ce('button','xbtn',k);b.style.minWidth='0';b.style.fontSize='14px';
+  if('÷×−+='.includes(k))b.style.color='#a00';
+  b.onclick=()=>{sndClick();press(k);};grid.appendChild(b);});}
+
+/* ==================== 命令提示符 + Python ==================== */
+let pyodideReady=null;
+function ensurePyodide(print){
+ if(window.pyodide)return Promise.resolve();
+ if(pyodideReady)return pyodideReady;
+ print('正在下载 Python 解释器 (Pyodide, ~10 MB)，请稍候...');
+ pyodideReady=new Promise((res,rej)=>{const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.23.4/pyodide.js';
+  s.onload=async()=>{try{window.pyodide=await loadPyodide({indexURL:'https://cdnjs.cloudflare.com/ajax/libs/pyodide/0.23.4/'});res();}catch(e){rej(e);}};
+  s.onerror=()=>rej(new Error('网络加载失败'));document.head.appendChild(s);});
+ return pyodideReady;}
+function openCmd(){
+ const win=createWindow({title:'命令提示符',icon:'⬛',width:600,height:380,app:'cmd'});
+ win.body.innerHTML='<div class="term"><div class="out"></div><div class="inrow"><span class="pr"></span><input spellcheck="false" autocomplete="off"></div></div>';
+ const term=win.body.querySelector('.term'),out=term.querySelector('.out'),inp=term.querySelector('input'),pr=term.querySelector('.pr');
+ let cwd='C:/Documents and Settings/Administrator',mode='dos',hist=[],hi=0,pyBuf=[];
+ const print=(s='')=>{String(s).split('\n').forEach(l=>{out.appendChild(ce('div','ln',esc(l)||' '));});term.scrollTop=term.scrollHeight;};
+ const printHTML=h=>{out.appendChild(ce('div','ln',h));term.scrollTop=term.scrollHeight;};
+ const prompt=()=>{pr.textContent=mode==='py'?(pyBuf.length?'... ':'>>> '):cwd.replace(/\//g,'\\')+'>';};
+ print('Microsoft Windows XP [版本 5.1.2600]');print('(C) 版权所有 1985-2001 Microsoft Corp.');print('');
+ print('提示: 输入 help 查看命令列表，输入 python 进入 Python。');print('');
+ term.onclick=()=>inp.focus();prompt();
+ async function runPy(code){try{await ensurePyodide(print);
+   window.pyodide.setStdout({batched:s=>print(s)});window.pyodide.setStderr({batched:s=>print(s)});
+   const r=await window.pyodide.runPythonAsync(code);
+   if(r!==undefined&&r!==null){print(typeof r==='object'&&r.toString?r.toString():String(r));if(r&&r.destroy)try{r.destroy();}catch(e){}}
+  }catch(e){print(String(e.message||e).split('\n').slice(-6).join('\n'));}}
+ async function exec(raw){const line=raw.trim();
+  if(mode==='py'){
+   if(line==='exit()'||line==='quit()'||line==='exit'){mode='dos';pyBuf=[];print('');return;}
+   if(/[:]\s*$/.test(line)||pyBuf.length&&line!==''){pyBuf.push(raw);return;}
+   if(pyBuf.length&&line===''){const code=pyBuf.join('\n');pyBuf=[];await runPy(code);return;}
+   if(line==='')return;await runPy(line);return;}
+  if(!line)return;
+  hist.push(line);hi=hist.length;
+  const [cmd,...args]=line.split(/\s+/);const arg=args.join(' ');
+  switch(cmd.toLowerCase()){
+   case 'help':print('CD       显示当前目录名或改变当前目录。\nCLS      清除屏幕。\nCOLOR    设置控制台颜色 (如 color 0a)。\nDATE     显示日期。\nDEL      删除文件。\nDIR      显示目录中的文件和子目录列表。\nECHO     显示消息。\nMKDIR    创建目录。\nPING     测试网络连接。\nPYTHON   启动 Python 解释器 (真的)。\nTREE     以图形显示目录结构。\nTYPE     显示文本文件的内容。\nVER      显示 Windows 版本。\nEXIT     退出命令提示符。\n\n隐藏命令请自行探索 :)');break;
+   case 'cls':out.innerHTML='';break;
+   case 'ver':print('\nMicrosoft Windows XP [版本 5.1.2600 - 浏览器复刻版]\n');break;
+   case 'date':print('当前日期: '+new Date().toLocaleString());break;
+   case 'echo':print(arg||'ECHO 处于打开状态。');break;
+   case 'cd':case 'chdir':{if(!arg){print(cwd.replace(/\//g,'\\'));break;}const np=fsJoin(cwd,arg);const node=fsGet(np);
+    if(node&&node.type==='dir')cwd=np;else print('系统找不到指定的路径。');break;}
+   case 'dir':{const dir=fsGet(cwd);print(' 驱动器 C 中的卷没有标签。\n '+cwd.replace(/\//g,'\\')+' 的目录\n');
+    let files=0,dirs=0,bytes=0;Object.values(dir.children).forEach(n=>{const d=(n.mtime||new Date());
+     print(d.toLocaleDateString().padEnd(12)+(n.type==='dir'?'   <DIR>          ':'          '+String((n.content||'').length).padStart(8)+' ')+n.name);
+     if(n.type==='dir')dirs++;else{files++;bytes+=(n.content||'').length;}});
+    print('              '+files+' 个文件     '+bytes.toLocaleString()+' 字节');print('              '+dirs+' 个目录\n');break;}
+   case 'type':case 'cat':{const node=fsGet(fsJoin(cwd,arg));if(node&&node.type==='file')print(node.mime==='image'?'(这是一张图片，用 explorer 看吧)':node.content);else print('系统找不到指定的文件。');break;}
+   case 'mkdir':case 'md':if(arg)fsMkdir(fsJoin(cwd,arg));renderDesktop();break;
+   case 'del':case 'rm':{const node=fsGet(fsJoin(cwd,arg));if(node&&node.type==='file'){recycleItem(fsJoin(cwd,arg));print('已移入回收站。');renderDesktop();}else print('找不到 '+arg);break;}
+   case 'tree':{print(cwd.replace(/\//g,'\\'));const walk=(node,prefix)=>{const ents=Object.values(node.children);
+     ents.forEach((n,i)=>{const last=i===ents.length-1;print(prefix+(last?'└── ':'├── ')+n.name+(n.type==='dir'?'/':''));
+      if(n.type==='dir')walk(n,prefix+(last?'    ':'│   '));});};walk(fsGet(cwd),'');break;}
+   case 'color':term.style.color=({a:'#5f5',b:'#5ff',c:'#f55',e:'#ff5',f:'#fff',7:'#ccc',2:'#0a0'})[(arg||'7').slice(-1).toLowerCase()]||'#ccc';break;
+   case 'ping':{const host=arg||'claude.ai';print('\n正在 Ping '+host+' [104.18.x.x] 具有 32 字节的数据:');
+    for(let i=0;i<4;i++)setTimeout(()=>{print('来自 104.18.x.x 的回复: 字节=32 时间='+(Math.floor(Math.random()*20)+8)+'ms TTL=56');if(i===3)print('');},400*(i+1));break;}
+   case 'python':case 'py':{await ensurePyodide(print);
+    print('Python 3.11 (Pyodide) on win32-browser');print('Type exit() to return to DOS. 多行代码块以空行结束。');mode='py';break;}
+   case 'bsod':showBSOD();break;
+   case 'format':print('警告：将丢失驱动器 C: 上的所有数据!\n继续格式化吗 (Y/N)? n\n\n（帮你按了 n，不用谢。）');break;
+   case 'whoami':print('administrator (但在浏览器沙箱里，谁都不是)');break;
+   case 'hello':print('你好呀。这台机器已经 25 年没关机了。');break;
+   case 'exit':win.close();return;
+   default:print("'"+cmd+"' 不是内部或外部命令，也不是可运行的程序\n或批处理文件。");}
+ }
+ inp.addEventListener('keydown',async e=>{
+  if(e.key==='Enter'){const v=inp.value;inp.value='';printHTML('<span style="color:#888">'+esc(pr.textContent)+'</span>'+esc(v));await exec(v);prompt();term.scrollTop=term.scrollHeight;}
+  else if(e.key==='ArrowUp'&&mode==='dos'){if(hi>0)inp.value=hist[--hi]||'';e.preventDefault();}
+  else if(e.key==='ArrowDown'&&mode==='dos'){if(hi<hist.length)inp.value=hist[++hi]||'';e.preventDefault();}});
+ setTimeout(()=>inp.focus(),60);}
+
+/* ==================== 代码编辑器 ==================== */
+function hlJS(src){let s=esc(src);
+ s=s.replace(/(\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*)/g,'\u0001$1\u0002');
+ s=s.replace(/(&quot;|"|')((?:\\.|(?!\1)[^\\\n])*)\1/g,m=>'\u0003'+m+'\u0004');
+ s=s.replace(/\b(function|return|var|let|const|if|else|for|while|class|new|import|from|def|print|in|of|true|false|True|False|None|null|undefined|async|await|try|catch|except|lambda|break|continue|typeof|this|self)\b/g,'<span class="k">$1</span>');
+ s=s.replace(/\b(\d+\.?\d*)\b/g,'<span class="n">$1</span>');
+ s=s.replace(/\u0001([\s\S]*?)\u0002/g,(m,c)=>'<span class="c">'+c.replace(/<[^>]*>/g,t=>t.replace(/</g,'&lt;'))+'</span>');
+ s=s.replace(/\u0003([\s\S]*?)\u0004/g,(m,c)=>'<span class="s">'+c.replace(/<span class="[kn]">|<\/span>/g,'')+'</span>');
+ return s;}
+function openCode(path){
+ const win=createWindow({title:'代码编辑器 - Visual Claude 2001',icon:'👨‍💻',width:640,height:480,app:'code'});
+ let cur=(typeof path==='string')?path:null;
+ win.body.innerHTML='';
+ const mb=buildMenuBar([
+  {label:'文件(F)',items:[
+   {label:'新建',action:()=>{ta.value=DEMO;cur=null;sync();}},
+   {label:'打开...',action:()=>fileDialog({mode:'open',start:DOCS,filter:n=>n.mime!=='image',cb:p=>{const n=fsGet(p);ta.value=n.content||'';cur=p;sync();win.setTitle(n.name+' - 代码编辑器');}})},
+   {label:'保存',action:()=>{const doS=p=>{fsWrite(p,ta.value);cur=p;win.setTitle(p.split('/').pop()+' - 代码编辑器');renderDesktop();};
+    if(cur)doS(cur);else fileDialog({mode:'save',start:DOCS,defName:'脚本.js',cb:doS});}},
+   {sep:true},{label:'退出',action:()=>win.close()}]},
+  {label:'运行(R)',items:[{label:'▶ 运行 JavaScript   F5',action:run},{label:'清空输出',action:()=>outEl.textContent=''}]},
+  {label:'帮助(H)',items:[{label:'关于',action:()=>msgbox({title:'代码编辑器',text:'Visual Claude 2001™\n支持 JS 语法高亮与运行。\nPython 文件请到命令提示符里用 python 跑。',icon:'info'})}]}]);
+ win.body.appendChild(mb);
+ const tbar=ce('div','toolbar','<div class="tbtn run-btn" style="color:#070">▶ 运行 (F5)</div><div style="margin-left:auto;color:#888;font-size:11px">JavaScript · console.log 输出到下方</div>');
+ win.body.appendChild(tbar);
+ const wrap=ce('div','code-wrap');
+ const lnEl=ce('div','code-ln','1');
+ const area=ce('div','code-area');
+ const hl=ce('pre','code-hl');const ta=ce('textarea','code-ta');ta.spellcheck=false;
+ area.appendChild(hl);area.appendChild(ta);wrap.appendChild(lnEl);wrap.appendChild(area);win.body.appendChild(wrap);
+ const outEl=ce('div','code-out','// 输出窗口 —— 按 F5 运行\n');
+ win.body.appendChild(outEl);
+ const DEMO='// 欢迎来到 2001 年的 IDE\n// 按 F5 或点击 ▶ 运行\n\nfunction fib(n) {\n  return n < 2 ? n : fib(n - 1) + fib(n - 2);\n}\n\nfor (let i = 0; i < 10; i++) {\n  console.log("fib(" + i + ") =", fib(i));\n}\n\nconsole.log("这台 XP 比你想象的能干。");';
+ ta.value=(cur&&fsGet(cur))?fsGet(cur).content:DEMO;
+ function sync(){hl.innerHTML=hlJS(ta.value)+'\n';const lines=ta.value.split('\n').length;
+  lnEl.textContent=Array.from({length:lines},(_,i)=>i+1).join('\n');
+  hl.scrollTop=ta.scrollTop;hl.scrollLeft=ta.scrollLeft;lnEl.scrollTop=ta.scrollTop;}
+ ta.addEventListener('input',sync);
+ ta.addEventListener('scroll',()=>{hl.scrollTop=ta.scrollTop;hl.scrollLeft=ta.scrollLeft;lnEl.scrollTop=ta.scrollTop;});
+ ta.addEventListener('keydown',e=>{
+  if(e.key==='Tab'){e.preventDefault();ta.setRangeText('  ',ta.selectionStart,ta.selectionEnd,'end');sync();}
+  if(e.key==='F5'){e.preventDefault();run();}});
+ function fmt(v){if(typeof v==='object')try{return JSON.stringify(v);}catch(e){return String(v);}return String(v);}
+ function run(){const logs=[];const cons={log:(...a)=>logs.push(a.map(fmt).join(' ')),error:(...a)=>logs.push('✖ '+a.map(fmt).join(' ')),warn:(...a)=>logs.push('⚠ '+a.map(fmt).join(' '))};
+  const t0=performance.now();
+  try{new Function('console',ta.value)(cons);}catch(e){logs.push('✖ '+e.constructor.name+': '+e.message);sndError();}
+  outEl.textContent=(logs.join('\n')||'(没有输出 —— 试试 console.log)')+'\n\n— 完成，用时 '+(performance.now()-t0).toFixed(1)+' ms';outEl.scrollTop=outEl.scrollHeight;}
+ tbar.querySelector('.run-btn').onclick=run;
+ sync();}
+
+
+/* ============ 扫雷 ============ */
+function openMine(){
+ const win=createWindow({title:'扫雷',icon:'💣',width:248,height:330,noMax:true,noResize:true,app:'winmine'});
+ win.body.style.background='#c0c0c0';win.body.style.padding='6px';
+ const W=9,H=9,MINES=10;
+ let grid,started,over,time,timer,flags;
+ const top=ce('div','mine-top');
+ const lcdM=ce('div','lcd','010'),smile=ce('div','smiley','🙂'),lcdT=ce('div','lcd','000');
+ top.appendChild(lcdM);top.appendChild(smile);top.appendChild(lcdT);
+ win.body.appendChild(top);
+ const gEl=ce('div','mine-grid');gEl.style.gridTemplateColumns='repeat('+W+',24px)';
+ win.body.appendChild(gEl);
+ function lcd(el,n){el.textContent=String(Math.max(0,Math.min(999,n))).padStart(3,'0');}
+ function reset(){
+  if(timer)clearInterval(timer);timer=null;started=false;over=false;time=0;flags=0;
+  smile.textContent='🙂';lcd(lcdM,MINES);lcd(lcdT,0);
+  grid=[];gEl.innerHTML='';
+  for(let y=0;y<H;y++){grid[y]=[];for(let x=0;x<W;x++){
+   const c={mine:false,open:false,flag:false,n:0,el:ce('div','mcell')};
+   grid[y][x]=c;gEl.appendChild(c.el);
+   c.el.oncontextmenu=e=>{e.preventDefault();toggleFlag(x,y);};
+   c.el.onmousedown=e=>{if(e.button===0&&!over&&!c.open&&!c.flag)smile.textContent='😮';};
+   c.el.onmouseup=e=>{if(e.button===0){if(!over)smile.textContent='🙂';openCell(x,y);}};
+  }}
+ }
+ function plant(sx,sy){
+  let n=0;
+  while(n<MINES){const x=Math.floor(Math.random()*W),y=Math.floor(Math.random()*H);
+   if(grid[y][x].mine||(Math.abs(x-sx)<=1&&Math.abs(y-sy)<=1))continue;
+   grid[y][x].mine=true;n++;}
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){let c=0;
+   eachNb(x,y,(nx,ny)=>{if(grid[ny][nx].mine)c++;});grid[y][x].n=c;}
+ }
+ function eachNb(x,y,f){for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+  if(!dx&&!dy)continue;const nx=x+dx,ny=y+dy;
+  if(nx>=0&&nx<W&&ny>=0&&ny<H)f(nx,ny);}}
+ function toggleFlag(x,y){const c=grid[y][x];if(over||c.open)return;
+  c.flag=!c.flag;c.el.textContent=c.flag?'🚩':'';flags+=c.flag?1:-1;lcd(lcdM,MINES-flags);}
+ function openCell(x,y){const c=grid[y][x];if(over||c.open||c.flag)return;
+  if(!started){started=true;plant(x,y);timer=setInterval(()=>{time++;lcd(lcdT,time);},1000);}
+  c.open=true;c.el.classList.add('open');
+  if(c.mine){c.el.textContent='💣';c.el.style.background='#f00';boom();return;}
+  if(c.n){c.el.textContent=c.n;c.el.classList.add('m'+c.n);}
+  else eachNb(x,y,(nx,ny)=>openCell(nx,ny));
+  checkWin();}
+ function boom(){over=true;clearInterval(timer);smile.textContent='😵';sndError();
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const c=grid[y][x];
+   if(c.mine&&!c.open){c.el.classList.add('open');c.el.textContent='💣';}}}
+ function checkWin(){let opened=0;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(grid[y][x].open)opened++;
+  if(opened===W*H-MINES){over=true;clearInterval(timer);smile.textContent='😎';sndDing();
+   msgbox({title:'扫雷',text:'你赢了！用时 '+time+' 秒。\n2001 年的办公室摸鱼之王就是你。',icon:'info'});}}
+ smile.onclick=reset;
+ win.onClose=()=>{if(timer)clearInterval(timer);};
+ reset();
+}
+
+/* ============ 贪吃蛇 ============ */
+function openSnake(){
+ const win=createWindow({title:'贪吃蛇 2001',icon:'🐍',width:340,height:408,noMax:true,noResize:true,app:'snake'});
+ win.body.style.background='#000';win.body.style.padding='8px';win.body.style.display='flex';win.body.style.flexDirection='column';
+ const info=ce('div','', '得分: 0　最高: 0');
+ info.style.cssText='color:#0f0;font-family:Consolas,monospace;font-size:12px;padding-bottom:6px';
+ const cv=document.createElement('canvas');cv.width=300;cv.height=300;cv.style.border='2px solid #0a0';
+ win.body.appendChild(info);win.body.appendChild(cv);
+ const hint=ce('div','','方向键移动 · 空格暂停 · 撞墙/咬自己 = 游戏结束');
+ hint.style.cssText='color:#070;font-size:10px;padding-top:6px';
+ win.body.appendChild(hint);
+ const g=cv.getContext('2d'),N=15,S=20;
+ let snake,dir,nextDir,food,score,best=0,dead,paused,loop;
+ function spawnFood(){do{food={x:Math.floor(Math.random()*N),y:Math.floor(Math.random()*N)};}
+  while(snake.some(s=>s.x===food.x&&s.y===food.y));}
+ function reset(){snake=[{x:7,y:7},{x:6,y:7},{x:5,y:7}];dir={x:1,y:0};nextDir=dir;score=0;dead=false;paused=false;spawnFood();}
+ function draw(){g.fillStyle='#000';g.fillRect(0,0,300,300);
+  g.fillStyle='#f00';g.fillRect(food.x*S+3,food.y*S+3,S-6,S-6);
+  snake.forEach((s,i)=>{g.fillStyle=i?'#0c0':'#6f6';g.fillRect(s.x*S+1,s.y*S+1,S-2,S-2);});
+  if(dead){g.fillStyle='rgba(0,0,0,.6)';g.fillRect(0,0,300,300);
+   g.fillStyle='#f44';g.font='bold 22px Tahoma';g.textAlign='center';
+   g.fillText('游戏结束',150,140);g.fillStyle='#0f0';g.font='12px Tahoma';
+   g.fillText('按空格重新开始',150,168);g.textAlign='left';}
+  else if(paused){g.fillStyle='#ff0';g.font='bold 16px Tahoma';g.textAlign='center';
+   g.fillText('已暂停',150,150);g.textAlign='left';}
+  info.textContent='得分: '+score+'　最高: '+best;}
+ function tick(){if(dead||paused){draw();return;}
+  dir=nextDir;
+  const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+  if(h.x<0||h.x>=N||h.y<0||h.y>=N||snake.some(s=>s.x===h.x&&s.y===h.y)){dead=true;best=Math.max(best,score);sndError();draw();return;}
+  snake.unshift(h);
+  if(h.x===food.x&&h.y===food.y){score+=10;sndClick();spawnFood();}else snake.pop();
+  draw();}
+ function key(e){
+  if(WINDOWS[win.id]===undefined)return;
+  if(activeWin!==win)return;
+  const k=e.key;
+  const map={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}};
+  if(map[k]){e.preventDefault();const d=map[k];if(d.x!==-dir.x||d.y!==-dir.y)nextDir=d;}
+  if(k===' '){e.preventDefault();if(dead)reset();else paused=!paused;}}
+ document.addEventListener('keydown',key);
+ win.onClose=()=>{clearInterval(loop);document.removeEventListener('keydown',key);};
+ reset();loop=setInterval(tick,130);draw();
+}
+
+/* ============ Windows Media Player（合成音乐 + 可视化）============ */
+const WMP_TRACKS=[
+ {name:'致爱丽丝 — 贝多芬',bpm:140,notes:[[76,1],[75,1],[76,1],[75,1],[76,1],[71,1],[74,1],[72,1],[69,2],[0,1],[60,1],[64,1],[69,1],[71,2],[0,1],[64,1],[68,1],[71,1],[72,2],[0,1],[64,1],[76,1],[75,1],[76,1],[75,1],[76,1],[71,1],[74,1],[72,1],[69,2]]},
+ {name:'欢乐颂 — 贝多芬',bpm:120,notes:[[64,1],[64,1],[65,1],[67,1],[67,1],[65,1],[64,1],[62,1],[60,1],[60,1],[62,1],[64,1],[64,1.5],[62,.5],[62,2],[64,1],[64,1],[65,1],[67,1],[67,1],[65,1],[64,1],[62,1],[60,1],[60,1],[62,1],[64,1],[62,1.5],[60,.5],[60,2]]},
+ {name:'小星星 — 传统',bpm:100,notes:[[60,1],[60,1],[67,1],[67,1],[69,1],[69,1],[67,2],[65,1],[65,1],[64,1],[64,1],[62,1],[62,1],[60,2]]},
+ {name:'卡农(片段) — 帕赫贝尔',bpm:90,notes:[[66,2],[64,2],[62,2],[61,2],[59,2],[57,2],[59,2],[61,2],[66,2],[64,2],[62,2],[61,2],[59,2],[57,2],[59,2],[61,2]]}];
+function openWMP(){
+ const win=createWindow({title:'Windows Media Player',icon:'🎵',width:430,height:380,app:'wmplayer'});
+ win.body.className='win-body wmp-body';
+ const viz=document.createElement('canvas');viz.className='wmp-viz';viz.width=406;viz.height=160;
+ const title=ce('div','wmp-title','点击曲目开始播放');
+ const list=ce('div','wmp-list');
+ const ctr=ce('div','wmp-ctr');
+ const bPlay=ce('div','wmp-btn','▶'),bStop=ce('div','wmp-btn','■'),bPrev=ce('div','wmp-btn','⏮'),bNext=ce('div','wmp-btn','⏭');
+ ctr.appendChild(bPrev);ctr.appendChild(bPlay);ctr.appendChild(bStop);ctr.appendChild(bNext);
+ win.body.appendChild(viz);win.body.appendChild(title);win.body.appendChild(ctr);win.body.appendChild(list);
+ let cur=-1,playing=false,seq=null,analyser=null,raf=null;
+ const g=viz.getContext('2d');
+ function stopAll(){playing=false;if(seq){seq.stop=true;seq=null;}bPlay.textContent='▶';}
+ function midiF(m){return 440*Math.pow(2,(m-69)/12);}
+ function play(i){
+  stopAll();cur=i;playing=true;bPlay.textContent='⏸';
+  const t=WMP_TRACKS[i];title.textContent='正在播放: '+t.name;
+  [...list.children].forEach((el,j)=>el.classList.toggle('sel',j===i));
+  const ctx=ac();
+  if(!analyser){analyser=ctx.createAnalyser();analyser.fftSize=64;analyser.connect(masterGain);}
+  const beat=60/t.bpm;const s={stop:false};seq=s;
+  let when=ctx.currentTime+.05;
+  t.notes.forEach(([m,d])=>{
+   if(m){const o=ctx.createOscillator(),gn=ctx.createGain();
+    o.type='triangle';o.frequency.value=midiF(m);
+    gn.gain.setValueAtTime(0,when);gn.gain.linearRampToValueAtTime(.5,when+.02);
+    gn.gain.setValueAtTime(.5,when+d*beat*.7);gn.gain.linearRampToValueAtTime(0,when+d*beat*.95);
+    o.connect(gn);gn.connect(analyser);
+    o.start(when);o.stop(when+d*beat);s.osc=o;}
+   when+=d*beat;});
+  const total=(when-ctx.currentTime)*1000;
+  setTimeout(()=>{if(seq===s&&!s.stop){next();}},total+100);
+ }
+ function next(){play((cur+1)%WMP_TRACKS.length);}
+ function prev(){play((cur-1+WMP_TRACKS.length)%WMP_TRACKS.length);}
+ WMP_TRACKS.forEach((t,i)=>{
+  const it=ce('div','wmp-item','♪ '+t.name);it.onclick=()=>play(i);list.appendChild(it);});
+ bPlay.onclick=()=>{if(cur<0)play(0);else if(playing){stopAll();title.textContent='已停止';}else play(cur);};
+ bStop.onclick=()=>{stopAll();title.textContent='已停止';};
+ bNext.onclick=next;bPrev.onclick=prev;
+ function drawViz(){
+  raf=requestAnimationFrame(drawViz);
+  g.fillStyle='#000';g.fillRect(0,0,viz.width,viz.height);
+  if(analyser){const data=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(data);
+   const bw=viz.width/data.length;
+   for(let i=0;i<data.length;i++){const h=data[i]/255*viz.height;
+    const grd=g.createLinearGradient(0,viz.height-h,0,viz.height);
+    grd.addColorStop(0,'#7df');grd.addColorStop(1,'#03c');
+    g.fillStyle=grd;g.fillRect(i*bw+1,viz.height-h,bw-2,h);}}
+  else{g.fillStyle='#036';g.font='12px Tahoma';g.fillText('Windows Media Player 9 系列',130,84);}
+ }
+ drawViz();
+ win.onClose=()=>{stopAll();cancelAnimationFrame(raf);};
+}
+
+/* ============ Movie Maker 视频编辑器 ============ */
+function openMovieMaker(){
+ const win=createWindow({title:'Windows Movie Maker — 逐帧动画工作室',icon:'🎬',width:620,height:480,app:'moviemk'});
+ win.body.style.display='flex';win.body.style.flexDirection='column';win.body.style.background='#dbe6f4';
+ const frames=[]; // dataURL list
+ let fps=6,playing=false,playIdx=0,playTimer=null,recording=false;
+ const tb=ce('div','toolbar');
+ const mk=(t,f)=>{const b=ce('div','tbtn',t);b.onclick=f;tb.appendChild(b);return b;};
+ mk('🖌 从画图导入帧',importPaint);
+ mk('📋 复制上一帧',dupFrame);
+ mk('🗑 删除选中帧',delFrame);
+ const bPlay=mk('▶ 播放',togglePlay);
+ mk('🎞 导出 WebM 视频',exportWebM);
+ win.body.appendChild(tb);
+ const main=ce('div','');main.style.cssText='flex:1;display:flex;min-height:0';
+ const prevWrap=ce('div','');prevWrap.style.cssText='flex:1;display:flex;align-items:center;justify-content:center;background:#333';
+ const cv=document.createElement('canvas');cv.width=400;cv.height=300;cv.style.cssText='background:#fff;box-shadow:0 0 18px #000';
+ prevWrap.appendChild(cv);
+ const side=ce('div','');side.style.cssText='width:150px;background:#fff;border-left:1px solid #aaa;overflow:auto;padding:4px';
+ side.innerHTML='<div style="font-size:11px;color:#666;padding:2px">时间轴（点击选择）</div>';
+ main.appendChild(prevWrap);main.appendChild(side);win.body.appendChild(main);
+ const bot=ce('div','statusbar');
+ const fpsLbl=ce('span','','帧率: 6 fps ');
+ const slider=document.createElement('input');slider.type='range';slider.min=1;slider.max=24;slider.value=6;slider.style.verticalAlign='middle';
+ slider.oninput=()=>{fps=+slider.value;fpsLbl.textContent='帧率: '+fps+' fps ';if(playing){clearInterval(playTimer);playTimer=setInterval(step,1000/fps);}};
+ const stat=ce('span','',' · 0 帧 · 提示：先在「画图」里画一帧，再回来点导入');
+ bot.appendChild(fpsLbl);bot.appendChild(slider);bot.appendChild(stat);win.body.appendChild(bot);
+ const g=cv.getContext('2d');
+ let sel=-1;
+ function drawIdx(i){g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);
+  if(i<0||!frames[i]){g.fillStyle='#999';g.font='14px Tahoma';g.textAlign='center';
+   g.fillText('没有帧 —— 去画图画点东西吧',cv.width/2,cv.height/2);g.textAlign='left';return;}
+  const img=new Image();img.onload=()=>{g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);
+   g.drawImage(img,0,0,cv.width,cv.height);};img.src=frames[i];}
+ function refreshSide(){
+  [...side.querySelectorAll('.mm-th')].forEach(e=>e.remove());
+  frames.forEach((f,i)=>{
+   const d=ce('div','mm-th');d.style.cssText='border:2px solid '+(i===sel?'#36c':'#ccc')+';margin:3px 0;cursor:pointer;position:relative';
+   const im=document.createElement('img');im.src=f;im.style.cssText='width:100%;display:block';
+   const n=ce('div','',String(i+1));n.style.cssText='position:absolute;left:2px;top:2px;background:#36c;color:#fff;font-size:10px;padding:0 4px;border-radius:2px';
+   d.appendChild(im);d.appendChild(n);
+   d.onclick=()=>{sel=i;refreshSide();drawIdx(i);};
+   side.appendChild(d);});
+  stat.textContent=' · '+frames.length+' 帧 · 时长 '+(frames.length/fps).toFixed(1)+' 秒';}
+ function importPaint(){
+  if(!paintCanvasRef){msgbox({title:'Movie Maker',text:'画图没有打开。\n我帮你打开 —— 画好一帧后再回来点「从画图导入帧」。',icon:'info',cb:()=>openPaint()});return;}
+  frames.push(paintCanvasRef.toDataURL('image/png'));sel=frames.length-1;refreshSide();drawIdx(sel);sndClick();}
+ function dupFrame(){if(!frames.length)return;const i=sel<0?frames.length-1:sel;
+  frames.splice(i+1,0,frames[i]);sel=i+1;refreshSide();drawIdx(sel);}
+ function delFrame(){if(sel<0)return;frames.splice(sel,1);sel=Math.min(sel,frames.length-1);refreshSide();drawIdx(sel);}
+ function step(){if(!frames.length)return;playIdx=(playIdx+1)%frames.length;drawIdx(playIdx);}
+ function togglePlay(){if(!frames.length){msgbox({title:'Movie Maker',text:'一帧都没有，播放个寂寞。',icon:'warn'});return;}
+  playing=!playing;bPlay.textContent=playing?'⏸ 暂停':'▶ 播放';
+  if(playing){playIdx=0;playTimer=setInterval(step,1000/fps);}else clearInterval(playTimer);}
+ function exportWebM(){
+  if(frames.length<2){msgbox({title:'Movie Maker',text:'至少需要 2 帧才能导出视频。',icon:'warn'});return;}
+  if(recording)return;recording=true;
+  const stream=cv.captureStream(fps);
+  const rec=new MediaRecorder(stream,{mimeType:'video/webm'});
+  const chunks=[];rec.ondataavailable=e=>chunks.push(e.data);
+  rec.onstop=()=>{
+   const blob=new Blob(chunks,{type:'video/webm'});
+   const fr=new FileReader();
+   fr.onload=()=>{
+    const name=uniqueName(DOCS,'我的电影','.webm');
+    fsWrite(DOCS+'/'+name,fr.result,'video/webm');
+    recording=false;sndDing();
+    msgbox({title:'Movie Maker',text:'导出完成！\n已保存到 我的文档\\'+name+'\n双击即可播放。',icon:'info'});
+    renderDesktop();};
+   fr.readAsDataURL(blob);};
+  let i=0;rec.start();
+  msgbox({title:'Movie Maker',text:'正在录制 '+frames.length+' 帧… 渲染农场（你的浏览器）马力全开。',icon:'info'});
+  const t=setInterval(()=>{
+   if(i>=frames.length*2){clearInterval(t);rec.stop();return;}
+   drawIdx(i%frames.length);i++;},1000/fps);}
+ win.onClose=()=>{if(playTimer)clearInterval(playTimer);};
+ drawIdx(-1);refreshSide();
+}
+function openVideoPlayer(path){
+ const node=fsGet(path);if(!node)return;
+ const win=createWindow({title:path.split('/').pop()+' — Windows Media Player',icon:'🎬',width:460,height:400,app:'wmplayer'});
+ win.body.style.cssText+=';background:#000;display:flex;align-items:center;justify-content:center';
+ const v=document.createElement('video');v.src=node.content;v.controls=true;v.loop=true;v.autoplay=true;
+ v.style.cssText='max-width:100%;max-height:100%';
+ win.body.appendChild(v);
+ win.onClose=()=>{v.pause();v.src='';};
+}
+
+/* ============ Internet Explorer ============ */
+function iePage(url){
+ url=(url||'').trim();
+ const u=url.toLowerCase();
+ if(!u||u==='about:home'||u.includes('msn'))return {url:'http://www.msn.com.cn/',html:
+  '<div style="background:linear-gradient(#fff,#e8f0fe);min-height:100%;font-family:Tahoma">'+
+  '<div style="background:linear-gradient(#0a52a5,#063a78);color:#fff;padding:10px 16px;font-size:20px;font-weight:bold">msn<span style="color:#9cf">.</span> 中国 <span style="font-size:11px;font-weight:normal">— 2001 年 6 月 10 日</span></div>'+
+  '<div style="display:flex;gap:14px;padding:14px">'+
+  '<div style="flex:2"><h3 style="color:#036;border-bottom:2px solid #f60;padding-bottom:4px">今日头条</h3>'+
+  '<p><b>· Windows XP 即将发布</b><br><span style="color:#555;font-size:12px">微软称其为"有史以来最好的 Windows"。知情人士透露开始菜单变成了绿色的。</span></p>'+
+  '<p><b>· 科学家预测：未来的电脑可以对话</b><br><span style="color:#555;font-size:12px">专家表示这至少还需要 200 年。（编者注：好像没用那么久。）</span></p>'+
+  '<p><b>· 本站推荐：把网页设为主页，每天都来看看</b></p></div>'+
+  '<div style="flex:1;background:#fff;border:1px solid #abc;padding:10px"><h4 style="margin:0 0 8px;color:#036">站内搜索</h4>'+
+  '<input id="ie-q" style="width:95%" placeholder="搜索 2001 年的互联网…"><br><br>'+
+  '<button onclick="ieSearchGo(this)">搜索</button>'+
+  '<hr><div style="font-size:11px;color:#666">友情链接：<br>· 聊天室（永远满员）<br>· 电子宠物乐园<br>· 56K 调制解调器之友</div></div>'+
+  '</div></div>'};
+ if(u.startsWith('search:')){const q=url.slice(7);return {url:'http://search.msn.com.cn/?q='+encodeURIComponent(q),html:
+  '<div style="font-family:Tahoma;padding:14px"><h3 style="color:#036">"'+esc(q)+'" 的搜索结果</h3>'+
+  '<p style="color:#080">约 1,337 条结果 (用时 14.4 秒，56K 网速请见谅)</p><hr>'+
+  '<p><a href="#" onclick="return false" style="color:#03c;font-size:14px">'+esc(q)+' — 官方网站（建设中）</a><br><span style="color:#080;font-size:11px">www.'+esc(q.replace(/\s+/g,''))+'.com.cn</span><br><span style="font-size:12px;color:#444">本网站正在建设中，请使用 800x600 分辨率及 IE 5.0 浏览以获得最佳效果……</span></p>'+
+  '<p><a href="#" onclick="return false" style="color:#03c;font-size:14px">'+esc(q)+'吧 — 火热讨论中</a><br><span style="font-size:12px;color:#444">1 楼：沙发！ 2 楼：板凳！ 3 楼：楼主说得对……</span></p>'+
+  '<p><a href="#" onclick="return false" style="color:#03c;font-size:14px">下载 '+esc(q)+' 屏幕保护程序（绝对没有病毒）</a><br><span style="font-size:12px;color:#444">下载量：999,999 次。杀毒软件请关闭后安装。</span></p></div>'};}
+ if(u.includes('anthropic')||u.includes('claude'))return {url:url.startsWith('http')?url:'http://'+url,html:
+  '<div style="font-family:Tahoma;padding:30px;text-align:center"><h2 style="color:#c40">⏳ 时空错误 404</h2>'+
+  '<p>你试图访问一个 <b>2026 年</b>的网站，但现在是 <b>2001 年</b>。</p><p style="color:#666;font-size:12px">请耐心等待 25 年，或者直接问问运行这台电脑的那个 AI。</p></div>'};
+ return {url:url.startsWith('http')?url:'http://'+url,html:
+  '<div style="font-family:Tahoma;padding:26px"><h2 style="color:#444">无法显示网页</h2>'+
+  '<p>您要访问的网页当前不可用。网站可能遇到技术问题，或者您的拨号连接又断了。</p><hr>'+
+  '<p style="font-size:12px;color:#555">请尝试以下操作：</p><ul style="font-size:12px;color:#555">'+
+  '<li>检查电话线是否被你妈拔了去打电话</li><li>单击 <b>刷新</b> 按钮，多点几次，说不定就好了</li>'+
+  '<li>回到 <b>主页 (about:home)</b>，那里永远可以访问</li></ul>'+
+  '<p style="font-size:11px;color:#999">无法找到服务器或 DNS 错误<br>Internet Explorer (本机离线版)</p></div>'};
+}
+function ieSearchGo(btn){
+ const doc=btn.ownerDocument;const q=doc.getElementById('ie-q');
+ if(q&&q.value.trim()&&window.__ieNav)window.__ieNav('search:'+q.value.trim());
+}
+function openIE(start){
+ const win=createWindow({title:'Internet Explorer',icon:'🌐',width:560,height:430,app:'iexplore'});
+ win.body.style.display='flex';win.body.style.flexDirection='column';
+ const tb=ce('div','toolbar');
+ const bk=ce('div','tbtn','⬅ 后退'),fw=ce('div','tbtn','➡'),rf=ce('div','tbtn','🔄 刷新'),hm=ce('div','tbtn','🏠 主页');
+ tb.appendChild(bk);tb.appendChild(fw);tb.appendChild(rf);tb.appendChild(hm);win.body.appendChild(tb);
+ const ab=ce('div','addrbar');ab.innerHTML='<span style="font-size:11px;color:#555">地址</span>';
+ const inp=document.createElement('input');inp.className='addr-input';
+ const go=ce('div','tbtn','转到');ab.appendChild(inp);ab.appendChild(go);win.body.appendChild(ab);
+ const frame=document.createElement('iframe');frame.className='ie-page';frame.style.cssText='flex:1;border:0;background:#fff';
+ win.body.appendChild(frame);
+ const sb=ce('div','statusbar','完成　　　　🌐 Internet');win.body.appendChild(sb);
+ let hist=[],hi=-1;
+ function nav(url,push=true){
+  const p=iePage(url);
+  sb.textContent='正在打开网页 '+p.url+' …';
+  setTimeout(()=>{
+   const doc=frame.contentDocument;doc.open();doc.write(p.html);doc.close();
+   doc.body.style.margin='0';
+   inp.value=p.url;sb.textContent='完成　　　　🌐 Internet';
+   win.setTitle((doc.title||p.url)+' - Internet Explorer');
+  },350+Math.random()*450);
+  if(push){hist=hist.slice(0,hi+1);hist.push(url);hi=hist.length-1;}}
+ window.__ieNav=u=>nav(u);
+ bk.onclick=()=>{if(hi>0){hi--;nav(hist[hi],false);}};
+ fw.onclick=()=>{if(hi<hist.length-1){hi++;nav(hist[hi],false);}};
+ rf.onclick=()=>nav(inp.value,false);
+ hm.onclick=()=>nav('about:home');
+ go.onclick=()=>nav(inp.value);
+ inp.onkeydown=e=>{if(e.key==='Enter')nav(inp.value);};
+ nav(start||'about:home');
+}
+
+/* ============ 显示属性 ============ */
+const WALLPAPERS=[['wp-bliss','Bliss（草原蓝天）'],['wp-azul','Azul（深海蓝）'],['wp-energy','Energy（活力橙）'],['wp-teal','Teal（青绿）'],['wp-olive','Olive（橄榄绿）']];
+function openDisplay(){
+ const win=createWindow({title:'显示 属性',icon:'🖥️',width:330,height:330,noMax:true,noResize:true,app:'display'});
+ win.body.style.padding='12px';win.body.style.background='#ece9d8';
+ win.body.innerHTML='<div style="font-size:11px;margin-bottom:8px"><b>桌面背景</b> —— 这可是装机师傅给你精心挑选的</div>';
+ const prev=ce('div','');prev.style.cssText='width:200px;height:130px;margin:0 auto 10px;border:2px inset #fff;background:linear-gradient(#235cdc,#74a8e8)';
+ win.body.appendChild(prev);
+ const list=ce('div','');list.style.cssText='background:#fff;border:1px inset #999;height:90px;overflow:auto;font-size:12px';
+ const wrap=$('#desktop-wrap');
+ WALLPAPERS.forEach(([cls,name])=>{
+  const it=ce('div','', '🖼 '+name);it.style.cssText='padding:3px 6px;cursor:default'+(wrap.classList.contains(cls)?';background:#316ac5;color:#fff':'');
+  it.onclick=()=>{
+   WALLPAPERS.forEach(([c])=>wrap.classList.remove(c));wrap.classList.add(cls);
+   [...list.children].forEach(e=>e.style.cssText='padding:3px 6px;cursor:default');
+   it.style.cssText='padding:3px 6px;cursor:default;background:#316ac5;color:#fff';
+   prev.className='';prev.classList.add(cls);prev.style.cssText='width:200px;height:130px;margin:0 auto 10px;border:2px inset #fff';
+   sndClick();};
+  list.appendChild(it);});
+ win.body.appendChild(list);
+ const ok=document.createElement('button');ok.textContent='确定';ok.style.cssText='float:right;margin-top:10px;min-width:70px';
+ ok.onclick=()=>win.close();win.body.appendChild(ok);
+}
+
+/* ============ 任务管理器 ============ */
+function openTaskMgr(){
+ const win=createWindow({title:'Windows 任务管理器',icon:'📊',width:360,height:330,app:'taskmgr'});
+ win.body.style.background='#ece9d8';win.body.style.padding='8px';win.body.style.display='flex';win.body.style.flexDirection='column';
+ const list=ce('div','');list.style.cssText='flex:1;background:#fff;border:1px inset #999;overflow:auto;font-size:12px';
+ const sb=ce('div','');sb.style.cssText='font-size:11px;color:#444;padding-top:6px';
+ let selId=null;
+ function refresh(){
+  list.innerHTML='<div style="background:#ece9d8;border-bottom:1px solid #aaa;padding:2px 6px;font-weight:bold">任务　　　　　　　　　　状态</div>';
+  const ids=Object.keys(WINDOWS);
+  ids.forEach(id=>{const w=WINDOWS[id];if(w===win)return;
+   const it=ce('div','',(w.minimized?'🗕 ':'🗖 ')+w.title+'　—　正在运行');
+   it.style.cssText='padding:3px 6px;cursor:default'+(selId===id?';background:#316ac5;color:#fff':'');
+   it.onclick=()=>{selId=id;refresh();};
+   list.appendChild(it);});
+  const cpu=5+Math.floor(Math.random()*20);
+  sb.textContent='进程数: '+ids.length+'　CPU 使用率: '+cpu+'%　内存: 128MB 中的 '+(60+ids.length*7)+'MB（XP 时代的奢侈配置）';}
+ const btns=ce('div','');btns.style.cssText='text-align:right;padding-top:8px';
+ const eb=document.createElement('button');eb.textContent='结束任务';
+ eb.onclick=()=>{if(selId&&WINDOWS[selId]){const w=WINDOWS[selId];selId=null;
+  if(w.onClose)w.onClose=null;w.close();refresh();sndClick();}};
+ btns.appendChild(eb);
+ win.body.appendChild(list);win.body.appendChild(sb);win.body.appendChild(btns);
+ const t=setInterval(refresh,1500);win.onClose=()=>clearInterval(t);
+ refresh();
+}
+
+/* ============ 日期和时间 ============ */
+function openDateTime(){
+ const win=createWindow({title:'日期和时间 属性',icon:'🕐',width:300,height:300,noMax:true,noResize:true,app:'datetime'});
+ win.body.className='win-body dt-body';
+ const d=new Date();
+ const info=ce('div','',d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日　星期'+'日一二三四五六'[d.getDay()]);
+ info.style.cssText='text-align:center;font-size:13px;padding:8px;font-weight:bold';
+ const cv=document.createElement('canvas');cv.width=160;cv.height=160;cv.style.cssText='display:block;margin:0 auto;background:#fff;border-radius:50%;border:3px solid #888';
+ const dig=ce('div','');dig.style.cssText='text-align:center;font-size:16px;font-family:Consolas,monospace;padding:8px';
+ win.body.appendChild(info);win.body.appendChild(cv);win.body.appendChild(dig);
+ const g=cv.getContext('2d');
+ function draw(){
+  const n=new Date(),cx=80,cy=80;
+  g.clearRect(0,0,160,160);
+  g.strokeStyle='#444';
+  for(let i=0;i<12;i++){const a=i*Math.PI/6;
+   g.beginPath();g.lineWidth=i%3?1:3;
+   g.moveTo(cx+Math.sin(a)*66,cy-Math.cos(a)*66);
+   g.lineTo(cx+Math.sin(a)*72,cy-Math.cos(a)*72);g.stroke();}
+  const hr=(n.getHours()%12+n.getMinutes()/60)*Math.PI/6;
+  const mi=(n.getMinutes()+n.getSeconds()/60)*Math.PI/30;
+  const se=n.getSeconds()*Math.PI/30;
+  const hand=(a,len,w,c)=>{g.beginPath();g.lineWidth=w;g.strokeStyle=c;g.lineCap='round';
+   g.moveTo(cx,cy);g.lineTo(cx+Math.sin(a)*len,cy-Math.cos(a)*len);g.stroke();};
+  hand(hr,38,4,'#222');hand(mi,55,3,'#222');hand(se,60,1,'#c00');
+  g.beginPath();g.fillStyle='#222';g.arc(cx,cy,3,0,7);g.fill();
+  dig.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');}
+ const t=setInterval(draw,500);win.onClose=()=>clearInterval(t);draw();
+}
+
+/* ============ 蓝屏 ============ */
+function showBSOD(){
+ const b=$('#bsod');
+ b.innerHTML='<div style="max-width:640px;margin:60px auto;padding:0 20px">'+
+ '<p>检测到问题，为了防止损坏计算机，Windows 已关闭。</p>'+
+ '<p>错误原因: USER_TYPED_BSOD_ON_PURPOSE</p>'+
+ '<p>技术信息:<br>*** STOP: 0x0000DEAD (0xC0FFEE00, 0x00000000, 0x2001FEED, 0x00000000)</p>'+
+ '<p>如果这是您第一次看到这个错误屏幕，恭喜你，收集成就 +1。<br>'+
+ '如果再次看到这个屏幕，那说明你又输入了一次 bsod。</p>'+
+ '<p>正在转储物理内存… 假装在转储… 转储完成。</p>'+
+ '<p style="margin-top:30px;text-align:center">按任意键返回那个美好的桌面 _</p></div>';
+ b.style.display='block';sndError();
+ const back=e=>{e.preventDefault();b.style.display='none';
+  document.removeEventListener('keydown',back,true);b.removeEventListener('mousedown',back);};
+ setTimeout(()=>{document.addEventListener('keydown',back,true);b.addEventListener('mousedown',back);},400);
+}
+
+/* ============ 气泡提示 ============ */
+function balloon(html,ms){
+ const b=$('#balloon');b.innerHTML=html;b.style.display='block';
+ clearTimeout(b._t);b._t=setTimeout(()=>{b.style.display='none';},ms||6000);
+ b.onclick=()=>{b.style.display='none';};
+}
+
+/* ============ 启动 / 登录 / 关机流程 ============ */
+function startBoot(){
+ $('#boot').style.display='flex';
+ $('#login').style.display='none';
+ $('#desktop-wrap').style.display='none';
+ $('#taskbar').style.display='none';
+ $('#safeoff').style.display='none';
+ setTimeout(showLogin,3400);
+}
+function showLogin(){
+ $('#boot').style.display='none';
+ $('#login').style.display='flex';
+}
+function doLogin(){
+ $('#login').style.display='none';
+ $('#desktop-wrap').style.display='block';
+ $('#taskbar').style.display='flex';
+ sndStartup();
+ setTimeout(()=>balloon('<b>欢迎使用 Windows XP</b><br>这是一台运行在你浏览器里的 2001 年电脑。<br>试试：开始菜单 → 运行 → 输入 <b>cmd</b>，再敲 <b>python</b>。<br>或者在命令提示符里输入 <b>bsod</b>（后果自负）。'),1800);
+}
+function logOff(){
+ hideStart();
+ Object.values(WINDOWS).forEach(w=>{w.onClose=null;w.close();});
+ sndShut();
+ setTimeout(showLogin,600);
+}
+function shutdownDialog(){hideStart();$('#shutoverlay').style.display='flex';}
+function hideShut(){$('#shutoverlay').style.display='none';}
+function standBy(){
+ hideShut();
+ const o=document.createElement('div');
+ o.style.cssText='position:fixed;inset:0;background:#000;z-index:99997;opacity:0;transition:opacity 1.2s';
+ document.body.appendChild(o);requestAnimationFrame(()=>o.style.opacity='1');
+ const wake=()=>{o.style.opacity='0';setTimeout(()=>o.remove(),1200);
+  o.removeEventListener('mousedown',wake);document.removeEventListener('keydown',wake);};
+ setTimeout(()=>{o.addEventListener('mousedown',wake);document.addEventListener('keydown',wake);},1300);
+}
+function powerOff(){
+ hideShut();sndShut();
+ Object.values(WINDOWS).forEach(w=>{w.onClose=null;w.close();});
+ $('#desktop-wrap').style.display='none';
+ $('#taskbar').style.display='none';
+ $('#login').style.display='none';
+ setTimeout(()=>{
+  const s=$('#safeoff');s.style.display='flex';
+  s.onclick=()=>{s.style.display='none';startBoot();};
+ },900);
+}
+function restartPC(){
+ hideShut();sndShut();
+ Object.values(WINDOWS).forEach(w=>{w.onClose=null;w.close();});
+ setTimeout(startBoot,800);
+}
+
+/* ============ 屏幕保护程序（90 秒空闲）============ */
+(function(){
+ let idleT=null,ssOn=false,bx=80,by=80,vx=2,vy=2,raf=null;
+ const ss=$('#screensaver'),logo=$('#ss-logo');
+ function arm(){clearTimeout(idleT);if(!ssOn)idleT=setTimeout(show,90000);}
+ function show(){
+  if(document.querySelector('#boot').style.display!=='none'&&getComputedStyle($('#boot')).display!=='none')return arm();
+  ssOn=true;ss.style.display='block';step();}
+ function step(){
+  bx+=vx;by+=vy;
+  const mw=innerWidth-logo.offsetWidth,mh=innerHeight-logo.offsetHeight;
+  if(bx<=0||bx>=mw){vx=-vx;bx=Math.max(0,Math.min(mw,bx));}
+  if(by<=0||by>=mh){vy=-vy;by=Math.max(0,Math.min(mh,by));}
+  logo.style.transform='translate('+bx+'px,'+by+'px)';
+  raf=requestAnimationFrame(step);}
+ function hide(){if(!ssOn)return;ssOn=false;cancelAnimationFrame(raf);ss.style.display='none';arm();}
+ ['mousemove','mousedown','keydown','touchstart','wheel'].forEach(ev=>
+  document.addEventListener(ev,()=>{if(ssOn)hide();else arm();},{passive:true}));
+ arm();
+})();
+
+/* ============ 初始化 ============ */
+initFS();
+buildStartMenu();
+renderDesktop();
+tickClock();setInterval(tickClock,1000);
+startBoot();
+</script>
+</body>
+</html>
